@@ -31,7 +31,7 @@
 }
 
 .select__menu-dropdown {
-    background-color: red;
+    background-color: blue;
     border-radius: var(--radius-m);
     position: absolute;
     width: 100%;
