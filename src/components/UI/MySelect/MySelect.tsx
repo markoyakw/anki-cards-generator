@@ -28,13 +28,15 @@ const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
         window.addEventListener("click", onSelectBlur)
     }, [])
 
-    const selectWrapperOpenClassName = isSelectOpen ? classes["select__wrapper--open"] : ""
-    const selectMenuDropdownClassName = isSelectOpen ? "" : classes["select__menu-dropdown--closed"]
+    const selectWrapperClassName = `${classes["select__wrapper"]} ${isSelectOpen ? classes["select__wrapper--open"] : ""}`
+    const selectClassName = `${classes["select"]} ${isSelectOpen ? classes["select--open"] : ""}`
+    const selectMenuDropdownClassName = `${classes["select__menu-dropdown"]} ${isSelectOpen ? "" : classes["select__menu-dropdown--closed"]}`
+    const getSelectOptionClassName = (optionValue: string) => `${classes["select__option"]} ${optionValue === value ? classes["select__option--active"] : ""}`
 
     return (
-        <div className={`${classes["select__wrapper"]} ${selectWrapperOpenClassName}`}>
+        <div className={selectWrapperClassName}>
             {/* readable select with options for screen readers */}
-            <select {...props} className={classes["select"]} ref={selectRef}
+            <select {...props} className={selectClassName} ref={selectRef}
                 onClick={() => onSelectClick()}
                 onMouseDown={e => e.preventDefault()}
                 // prevent opening a native select menu
@@ -44,9 +46,9 @@ const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
             </select>
 
             {/* styled select drop menu as a workaround for css limitations*/}
-            <ul className={`${classes["select__menu-dropdown"]} ${selectMenuDropdownClassName}`}>
+            <ul className={selectMenuDropdownClassName}>
                 {children.map((option, optionId) =>
-                    <li key={optionId} className={classes["select__option"]} onClick={() => onOptionChoose(option.props.value)}>
+                    <li key={optionId} className={getSelectOptionClassName(option.props.value)} onClick={() => onOptionChoose(option.props.value)}>
                         {option}
                     </li>
                 )}
