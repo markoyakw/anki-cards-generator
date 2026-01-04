@@ -31,7 +31,7 @@ const MainForm = () => {
         setListOfWords(e.target.value)
     }
 
-    const ai = new GoogleGenAI({ apiKey: "AIzaSyATrE19dn98hQBFR9oV3gS_2mX74Y0hrXc" });
+    const ai = new GoogleGenAI({ apiKey: "" });
 
     async function generateDeck(
         nativeLanguage: TNativeLanguageValue | undefined,
