@@ -1,0 +1,19 @@
+.button {
+    background-color: var(--color-accent);
+    border: none;
+    border-radius: var(--radius-m);
+    height: 40px;
+    align-self: center;
+    color: var(--color-text);
+    font-size: var(--font-size-xl);
+    cursor: pointer;
+}
+
+.button:hover {
+    filter: brightness(1.1);
+}
+
+.button:disabled {
+    background-color: var(--color-disabled-content);
+    color: var(--color-disabled-text);
+}

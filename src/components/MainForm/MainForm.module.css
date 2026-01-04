@@ -1,0 +1,85 @@
+.deck-generator {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-m);
+}
+
+.form {
+    display: flex;
+    gap: var(--spacing-m);
+}
+
+.form__controlls-row {
+    width: 30%;
+    flex-direction: column;
+    display: flex;
+    gap: var(--spacing-s);
+}
+
+.form__select-and-title {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.form__button {
+    margin-top: var(--spacing-xs);
+}
+
+.form__button button {
+    width: 100%;
+}
+
+.form__textarea-row {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-s);
+}
+
+.form__textarea-row textarea {
+    height: 100%;
+    overflow: hidden;
+}
+
+.form__textarea-row label {
+    font-size: var(--font-size-xl);
+}
+
+.form__dividers-controller {
+    flex-grow: 1;
+}
+
+/* vertical divider */
+.form__dividers-controller div:first-child {
+    height: 100%;
+}
+
+/* horisontal divider */
+.form__dividers-controller div:nth-child(2) {
+    display: none;
+}
+
+@media(max-width: 670px) {
+    .form {
+        flex-direction: column;
+    }
+
+    .form__controlls-row {
+        width: 100%;
+    }
+
+    .form__textarea-row {
+        width: 100%;
+    }
+
+    /* vertical divider */
+    .form__dividers-controller div:first-child {
+        display: none;
+    }
+
+    /* horisontal divider */
+    .form__dividers-controller div:nth-child(2) {
+        display: block;
+    }
+}

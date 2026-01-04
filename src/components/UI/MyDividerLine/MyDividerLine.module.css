@@ -1,0 +1,7 @@
+.divider--vertical {
+    border-left: var(--border);
+}
+
+.divider--horisontal {
+    border-bottom: var(--border);
+}

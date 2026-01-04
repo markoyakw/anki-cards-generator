@@ -1,0 +1,25 @@
+body,
+#root,
+html {
+    height: 100%;
+    width: 100%;
+    font-family: "Arimo", sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-font)
+}
+
+html {
+    font-size: 17px;
+}
+
+body {
+    font-size: var(--font-size-m);
+}
+
+h1 {
+    font-size: var(--font-size-xl);
+}
+
+h2 {
+    font-size: var(--font-size-l);
+}

@@ -1,0 +1,14 @@
+.textarea {
+    background-color: var(--color-primary);
+    border-radius: var(--radius-m);
+    outline: var(--border);
+    color: var(--color-text);
+    padding: var(--padding-card);
+    resize: none;
+    border: none;
+}
+
+.textarea:focus {
+    border: none;
+    outline: var(--border-focus);
+}

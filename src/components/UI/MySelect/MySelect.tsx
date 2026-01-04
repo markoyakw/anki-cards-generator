@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState, type FC, type OptionHTMLAttributes, type ReactElement, type SelectHTMLAttributes } from "react"
+import { useEffect, useRef, useState, type ChangeEvent, type FC, type OptionHTMLAttributes, type ReactElement, type SelectHTMLAttributes } from "react"
 import classes from "./MySelect.module.css"
 
-type TSelectChild = ReactElement<OptionHTMLAttributes<HTMLOptionElement> & { value: string }>
+type TSelectChild = ReactElement<OptionHTMLAttributes<HTMLOptionElement> & { value: string | undefined }>
 
 type TSelectProps = {
-    children: TSelectChild[]
+    children: TSelectChild[],
 } & SelectHTMLAttributes<HTMLSelectElement>
 
 const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
@@ -22,10 +22,22 @@ const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
     }
     const onOptionChoose = (newValue: string) => {
         setValue(newValue)
+
+        if (props.onChange) {
+            const event = {
+                target: {
+                    value: newValue
+                }
+            } as ChangeEvent<HTMLSelectElement>;
+
+            props.onChange(event);
+        }
     }
 
     useEffect(() => {
         window.addEventListener("click", onSelectBlur)
+
+        return () => window.removeEventListener("click", onSelectBlur)
     }, [])
 
     const selectWrapperClassName = `${classes["select__wrapper"]} ${isSelectOpen ? classes["select__wrapper--open"] : ""}`
@@ -36,7 +48,8 @@ const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
     return (
         <div className={selectWrapperClassName}>
             {/* readable select with options for screen readers */}
-            <select {...props} className={selectClassName} ref={selectRef}
+            <select {...props} className={selectClassName}
+                ref={selectRef}
                 onClick={() => onSelectClick()}
                 onMouseDown={e => e.preventDefault()}
                 // prevent opening a native select menu
@@ -47,11 +60,17 @@ const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
 
             {/* styled select drop menu as a workaround for css limitations*/}
             <ul className={selectMenuDropdownClassName}>
-                {children.map((option, optionId) =>
-                    <li key={optionId} className={getSelectOptionClassName(option.props.value)} onClick={() => onOptionChoose(option.props.value)}>
-                        {option}
-                    </li>
-                )}
+                {children.map((option, optionId) => {
+
+                    const optionValue = option.props.value
+                    if (!optionValue) return
+
+                    else return (
+                        <li key={optionId} className={getSelectOptionClassName(optionValue)} onClick={() => onOptionChoose(optionValue)}>
+                            {option}
+                        </li>
+                    )
+                })}
             </ul>
         </div>
     )
