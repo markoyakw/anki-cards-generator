@@ -28,3 +28,10 @@ export const LEVEL_OF_LANGUAGE_OPTIONS = [
 
 export type TLevelOfLanguageOption = typeof LEVEL_OF_LANGUAGE_OPTIONS[number]
 export type TLevelOfLanguageValue = typeof LEVEL_OF_LANGUAGE_OPTIONS[number]["value"]
+
+export type TFormValues = {
+    "native-language-select": TNativeLanguageValue,
+    "language-to-learn-select": TLanguageToLearnValue
+    "level-of-language-select": TLevelOfLanguageValue
+    "prompt-words-to-process" : string
+}
