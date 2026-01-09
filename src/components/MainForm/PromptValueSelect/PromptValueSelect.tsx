@@ -1,24 +1,25 @@
-import type { ChangeEvent, FC } from "react"
+import type { FC } from "react"
 import MySelect from "../../UI/MySelect/MySelect"
-import type { TLanguageToLearnOption, TLanguageToLearnValue, TLevelOfLanguageOption, TLevelOfLanguageValue, TNativeLanguageOption, TNativeLanguageValue } from "../../../constants/mainForm"
+import type { TFormValues, TLanguageToLearnOption, TLevelOfLanguageOption, TNativeLanguageOption } from "../../../constants/mainForm"
+import type { ControllerRenderProps, FieldValues } from "react-hook-form"
 
-type TPromptValueSelectProps = {
+type TPromptValueSelectProps<
+    TFieldValues extends FieldValues = FieldValues & TFormValues
+> = {
     labelText: string,
-    selectValue: TNativeLanguageValue | TLanguageToLearnValue | TLevelOfLanguageValue | undefined,
-    onSelectValueChange: (e: ChangeEvent<HTMLSelectElement & {
-        value: TNativeLanguageValue & TLanguageToLearnValue & TLevelOfLanguageValue
-    }>) => void,
     options: readonly TLanguageToLearnOption[] | readonly TNativeLanguageOption[] | readonly TLevelOfLanguageOption[],
-    id: string
+    id: string,
+    useFormControllerField: ControllerRenderProps<TFieldValues>,
+    isError?: boolean
 }
 
 
 const PromptValueSelect: FC<TPromptValueSelectProps> = ({
     labelText,
-    selectValue,
-    onSelectValueChange,
     options,
-    id
+    id,
+    useFormControllerField,
+    isError
 }) => {
 
     return (
@@ -26,7 +27,7 @@ const PromptValueSelect: FC<TPromptValueSelectProps> = ({
             <label htmlFor={id}>
                 {labelText}
             </label>
-            <MySelect id={id} value={selectValue} onChange={onSelectValueChange}>
+            <MySelect isError={isError} id={id} {...useFormControllerField}>
                 {options.map((option, optionId) => (
                     <option key={optionId} value={option.value}>
                         {option.text}
