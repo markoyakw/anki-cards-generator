@@ -5,9 +5,10 @@ type TSelectChild = ReactElement<OptionHTMLAttributes<HTMLOptionElement> & { val
 
 type TSelectProps = {
     children: TSelectChild[],
+    isError?: boolean
 } & SelectHTMLAttributes<HTMLSelectElement>
 
-const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
+const MySelect: FC<TSelectProps> = ({ children, isError, ...props }) => {
 
     const [isSelectOpen, setIsSelectOpen] = useState(false)
     const [value, setValue] = useState(children[0].props.value)
@@ -36,13 +37,12 @@ const MySelect: FC<TSelectProps> = ({ children, ...props }) => {
 
     useEffect(() => {
         window.addEventListener("click", onSelectBlur)
-
         return () => window.removeEventListener("click", onSelectBlur)
     }, [])
 
-    const selectWrapperClassName = `${classes["select__wrapper"]} ${isSelectOpen ? classes["select__wrapper--open"] : ""}`
-    const selectClassName = `${classes["select"]} ${isSelectOpen ? classes["select--open"] : ""}`
-    const selectMenuDropdownClassName = `${classes["select__menu-dropdown"]} ${isSelectOpen ? "" : classes["select__menu-dropdown--closed"]}`
+    const selectWrapperClassName = `${classes["select__wrapper"]} ${isSelectOpen && classes["select__wrapper--open"]}`
+    const selectClassName = `${classes["select"]} ${isSelectOpen && classes["select--open"]} ${isError && classes["select--error"]}`
+    const selectMenuDropdownClassName = `${classes["select__menu-dropdown"]} ${!isSelectOpen && classes["select__menu-dropdown--closed"]}`
     const getSelectOptionClassName = (optionValue: string) => `${classes["select__option"]} ${optionValue === value ? classes["select__option--active"] : ""}`
 
     return (

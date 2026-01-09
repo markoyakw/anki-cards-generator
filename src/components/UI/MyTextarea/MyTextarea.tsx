@@ -1,11 +1,14 @@
 import { useEffect, useRef, type FC, type TextareaHTMLAttributes } from 'react'
 import classes from "./MyTextarea.module.css"
 
-type MyTextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement>
+type MyTextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+    isError?: boolean
+}
 
-const MyTextarea: FC<MyTextareaProps> = (props) => {
+const MyTextarea: FC<MyTextareaProps> = ({ isError, ...props }) => {
 
     const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const className = `${classes["textarea"]} ${isError && classes["textarea--error"]}`
 
     const calculateTextareaSize = () => {
         const textarea = textareaRef.current
@@ -14,9 +17,11 @@ const MyTextarea: FC<MyTextareaProps> = (props) => {
         textarea.style.height = textarea.scrollHeight + "px";
     }
 
-    const onInput = () => {
+    //recalculating an textArea size on rerender instead of on input because a change of
+    //nearby components can effect it's size that will be fixed only on the next input
+    useEffect(()=>{
         calculateTextareaSize()
-    }
+    })
 
     useEffect(() => {
         window.addEventListener("resize", calculateTextareaSize)
@@ -24,7 +29,7 @@ const MyTextarea: FC<MyTextareaProps> = (props) => {
     }, [])
 
     return (
-        <textarea ref={textareaRef} {...props} className={classes["textarea"]} onInput={onInput} />
+        <textarea {...props} ref={textareaRef} className={className} />
     )
 }
 

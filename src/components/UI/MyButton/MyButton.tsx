@@ -2,12 +2,15 @@ import { type ButtonHTMLAttributes, type FC, type ReactNode } from 'react'
 import classes from "./MyButton.module.css"
 
 type TMyButtonProps = {
-    children: ReactNode
+    children: ReactNode,
+    loading?: boolean
 } & ButtonHTMLAttributes<HTMLButtonElement>
 
-const MyButton: FC<TMyButtonProps> = ({ children, ...props }) => {
+const MyButton: FC<TMyButtonProps> = ({ children, loading, ...props }) => {
+
+    const className = `${classes["button"]} ${loading && classes["button--loading"]}`
     return (
-        <button className={classes["button"]} {...props}>
+        <button className={className} {...props}>
             {children}
         </button>
     )

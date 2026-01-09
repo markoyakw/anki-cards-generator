@@ -12,3 +12,8 @@
     border: none;
     outline: var(--border-focus);
 }
+
+.textarea--error,
+.textarea--error:focus {
+    outline-color: var(--color-error);
+}

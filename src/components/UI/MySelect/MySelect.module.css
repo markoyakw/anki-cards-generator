@@ -34,6 +34,10 @@
     appearance: none;
 }
 
+.select--error {
+    border-color: var(--color-error) !important;
+}
+
 .select--open {
     border: var(--border-focus);
 }

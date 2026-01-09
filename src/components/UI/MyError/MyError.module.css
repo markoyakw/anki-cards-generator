@@ -1,0 +1,5 @@
+.error {
+    background-color: var(--color-error);
+    border-radius: var(--radius-m);
+    padding: var(--padding-card);
+}

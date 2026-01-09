@@ -9,6 +9,10 @@
     cursor: pointer;
 }
 
+.button--loading{
+    
+}
+
 .button:hover {
     filter: brightness(1.1);
 }
@@ -16,4 +20,9 @@
 .button:disabled {
     background-color: var(--color-disabled-content);
     color: var(--color-disabled-text);
+}
+
+.button:disabled:hover {
+    filter: none;
+    cursor: default
 }
