@@ -7,6 +7,7 @@ html {
     --color-accent: #5C3E94;
     --color-disabled-content: #4f545d;
     --color-disabled-text: darkgrey;
+    --color-error: #d21f3c;
     --border: 2px solid var(--color-primary-highlight);
     --border-focus: 2px solid var(--color-accent);
 
