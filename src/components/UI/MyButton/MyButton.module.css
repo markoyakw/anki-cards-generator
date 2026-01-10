@@ -7,10 +7,36 @@
     color: var(--color-text);
     font-size: var(--font-size-xl);
     cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.button--loading{
-    
+.button--loading::after {
+    --loading-circle-degree: 0deg;
+    content: "";
+    display: block;
+    position: absolute;
+    height: 40px;
+    width: 40px;
+    background: conic-gradient(black var(--loading-circle-degree), white var(--loading-circle-degree));
+    animation: loading-circle-spin linear infinite 1s;
+}
+
+@property --loading-circle-degree {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes loading-circle-spin {
+    from {
+        --loading-circle-degree: 0deg
+    }
+
+    to {
+        --loading-circle-degree: 360deg
+    }
 }
 
 .button:hover {
