@@ -12,30 +12,49 @@
     justify-content: center;
 }
 
-.button--loading::after {
+/* outside spinner circle */
+.button--loading::before {
     --loading-circle-degree: 0deg;
     content: "";
     display: block;
     position: absolute;
-    height: 40px;
-    width: 40px;
-    background: conic-gradient(black var(--loading-circle-degree), white var(--loading-circle-degree));
-    animation: loading-circle-spin linear infinite 1s;
+    height: 28px;
+    width: 28px;
+    background: conic-gradient(var(--color-accent) var(--loading-circle-degree), var(--color-font) var(--loading-circle-degree));
+    animation: loading-circle-spin linear infinite 4s;
+    border-radius: 50%;
+}
+
+/* inside spinner circle */
+.button--loading::after {
+    z-index: 1;
+    content: "";
+    display: block;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: inherit;
 }
 
 @property --loading-circle-degree {
-  syntax: "<angle>";
-  initial-value: 0deg;
-  inherits: false;
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
 }
 
 @keyframes loading-circle-spin {
-    from {
-        --loading-circle-degree: 0deg
+    0% {
+        --loading-circle-degree: 0deg;
+        transform: rotate(0deg);
     }
 
-    to {
-        --loading-circle-degree: 360deg
+    50% {
+        --loading-circle-degree: 300deg
+    }
+
+    100% {
+        --loading-circle-degree: 0deg;
+        transform: rotate(1800deg);
     }
 }
 
@@ -48,7 +67,12 @@
     color: var(--color-disabled-text);
 }
 
-.button:disabled:hover {
+.button--loading {
+    background-color: var(--color-accent) !important;
+}
+
+.button:disabled:hover,
+.button--loading:hover {
     filter: none;
     cursor: default
 }
