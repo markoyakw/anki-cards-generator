@@ -102,26 +102,44 @@ const getPromptWithoutWordsToProcess = (
     symbol here. Don't skip empty fields. Or it will crash the app.
     "Zusätzliche Information" - If there is additional information about the word 
     or a phrase (for example, only used in unoficiall conversation or used in a rude 
-    way or don't have a plural form), fill this field. If not, leave here a singular 
+    way, don't have a plural form or is N-deklination), fill this field. If not, leave here a singular 
     space symbol. If present, it should be filled in ${nativeLanguageText} language, with german 
     parts if they are needed for better understanding.
+    In the field "Das Wort auf Deutsch", if multiple words given, that are written
+    the same in German or even are factually same, but have multiple different meanings in the 
+    native language (that are specified), don't merge them. They are supposed to be separated.
     In the field "Das Wort auf Deutsch" only words that are always capitalized 
     (i.e., nouns) will start with a capital letter. All other words, including 
     articles, should start with a lowercase letter. If a word is a noun, it should 
-    always have a definite article. If an indefinite article is present, change 
+    always have a definite article and start with a capital letter. Even if it's
+    in a phrase or in a sentence. If an indefinite article is present, change 
     it to a definite one. However, do not forcefully change a word to a noun if 
     it is not a noun in the given context. In other fields, use the capital letters 
     with account of new line, new sentence etc.
     Also, if only a noun, not a phrase is given, this field needs to include 
     singular and plural form, separated by a "-" symbol. like that: "singular - 
-    plural". Plural form must be written fully but without the "die" article. 
+    plural". Plural form must be written fully but without the "die" article.
+    For example: der Schuh - Schuhe. Plural form should not have "die" before the word.
     If any of forms is does not exist, write "kein form name" instead of a form. 
     for example: "singular - keine Pluralform"
-    In a same manner, add hat/ist + perfect form to verbs. Without Präteritum 
-    and separated by "-".
+    In a same manner, add hat/ist + perfect form to all the verbs. Separate
+    the forms with "-". And If the verb has a
+    strong (starke) or mixed (gemischte) 3. Person (er/sie/es) form, add this form too with "er"
+    before, so students will know that it's form for er/sie/es. For example, "er bewirbt sich".
+    Separate this form from others with "-" symbol. In the end, every form of
+    a verb should be separated with "-" from other.
+    ONLY ADD ER/SIE/ES FORM IF THE VERB'S ER/SIE/ES FORM IS IRREGULAR, IT'S CRUCIAL FOR THE STUDENTS!
+    The order of verb forms (if one of forms is missing or not needed, just skip it) should be like that:
+    infinitive - perfekt - er + 3. Person form (er/sie/es form)
+    If a special preposition is included with the verb, don't delete it as it's very important because
+    it's supposed to be used together with the verb it should be present in the "Das wort auf Deutsch" field
+    in a place, where it's usually used Try to keep all the needed prepositions/words/
+    anything that was written with the given words if it makes sence.
     If regular, perfect, plural or a singular form does not exist or its usage 
     is unique or different in meaning completely, then also add about it in a 
-    "Zusätzliche Information" field.
+    "Zusätzliche Information" field. You should write about it there too, if the word
+    is in n-deklination or mixed deklination group and add akkusativ and genitiv form,
+    if it's the case.
     "Der Hinweis" field should have a clue about a context, in which the word is 
     used. Clue must be in ${nativeLanguageText} language.
     "die Verwendungsbeispiele auf Deutsch" 1, 2 and 3 - are separate fields and 

@@ -15,6 +15,11 @@ const MainForm = () => {
 
     const MINIMAL_LIST_OF_WORDS_STRING_LENGTH = 20
     const [deckResult, setDeckResult] = useState<string>("")
+    const [isLoading, setIsLoading] = useState(false)
+    const [isStreaming, setIsStreaming] = useState(false)
+    const [isTextBlockCollapsed, setIsTextBlockCollapsed] = useState(true)
+    const toggleIsTextBlockCollapsed = () => setIsTextBlockCollapsed(oldState => !oldState)
+
     const { handleSubmit, control, getValues, formState: { errors, isValid, isDirty, isSubmitted } } = useForm<TFormValues>({
         mode: "onTouched",
         reValidateMode: "onChange"
@@ -25,19 +30,33 @@ const MainForm = () => {
 
     async function generateDeck(data: TFormValues) {
         if (!data["language-to-learn-select"] || !data["level-of-language-select"] || !data["native-language-select"] || !data["prompt-words-to-process"]) throw new Error("One of needed parameters is unefined")
-        const prompt = buildPrompt(data)
-        const response = await ai.models.generateContentStream({
-            model: "gemini-2.5-flash",
-            contents: prompt
-        });
+        setIsLoading(true)
+        setDeckResult("")
 
-        for await (const chunk of response) {
-            setDeckResult(oldData => oldData + chunk.text);
+        try {
+            const prompt = buildPrompt(data)
+            const response = await ai.models.generateContentStream({
+                model: "gemini-2.5-flash",
+                contents: prompt
+            });
+
+            for await (const chunk of response) {
+                setIsStreaming(true)
+                setIsLoading(false)
+                setDeckResult(oldData => oldData + chunk.text);
+            }
+        }
+        catch (e) {
+            console.error("Streaming error", e)
+        }
+        finally {
+            setIsLoading(false)
+            setIsStreaming(false)
         }
     }
 
     const onSubmit: SubmitHandler<TFormValues> = (data) => {
-        // generateDeck(data)
+        generateDeck(data)
     }
 
     return (
@@ -101,14 +120,14 @@ const MainForm = () => {
                             errors["level-of-language-select"]?.message || errors["root"]?.message || errors["native-language-select"]?.message}
                     </MyError>
                     <div className={classes["form__button"]}>
-                        <MyButton type='submit' disabled={!isValid && isDirty && isSubmitted} loading>
+                        <MyButton type='submit' disabled={!isValid && isDirty && isSubmitted} loading={isLoading}>
                             generate
                         </MyButton>
                     </div>
                 </div>
             </form >
             {deckResult &&
-                <MyCopyableTextBlock id='deck-result' label={`${getValues("native-language-select")}-${getValues("language-to-learn-select")}-${getValues("level-of-language-select")}`}>
+                <MyCopyableTextBlock id='deck-result' label={`${getValues("native-language-select")}-${getValues("language-to-learn-select")}-${getValues("level-of-language-select")}`} isCollapsed={isTextBlockCollapsed} toggleIsTextBlockCollapsed={toggleIsTextBlockCollapsed} isLoading={isStreaming}>
                     {deckResult}
                 </MyCopyableTextBlock>
             }

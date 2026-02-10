@@ -1,9 +1,70 @@
 .text-block__container {
+    --show-lines-minimised-count: 6;
     background-color: var(--color-secondary);
     border: var(--border);
     border-radius: var(--radius-m);
     padding: var(--padding-card);
-    --animation-duration: 0.22s
+    --copy-text-animation-duration: 0.22s;
+    overflow: hidden;
+    position: relative;
+}
+
+.text-block__container--collapsed {
+    height: calc(var(--line-height) * (1 + var(--show-lines-minimised-count)) + var(--spacing-s) * 2);
+}
+
+.text-block__container--expanded {
+    padding-bottom: calc(var(--spacing-s) + 30px);
+}
+
+.text-block__container--collapsed::after {
+    display: block;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0px;
+    left: 0px;
+    pointer-events: none;
+    background: linear-gradient(transparent, transparent 60%, var(--color-secondary) 95%);
+}
+
+.collapse-button {
+    display: flex;
+    align-items: center;
+    padding-bottom: 7px;
+    justify-content: center;
+    position: absolute;
+    border: none;
+    width: 30px;
+    height: 30px;
+
+    bottom: calc(var(--spacing-s));
+    right: calc(var(--spacing-s));
+    z-index: 1;
+    cursor: pointer;
+
+    background-color: var(--color-accent);
+    border-radius: var(--radius-m);
+}
+
+.collapse-button:hover {
+    filter: brightness(1.2);
+}
+
+.collapse-button::after {
+    display: block;
+    content: "";
+    width: 14px;
+    height: 14px;
+    border-bottom: 4px solid var(--color-font);
+    border-left: 4px solid var(--color-font);
+    rotate: -45deg;
+}
+
+.collapse-button--expanded::after {
+    margin-top: 12px;
+    rotate: 135deg;
 }
 
 .text-block__header {
@@ -19,13 +80,21 @@
     background-color: transparent;
 }
 
-.copy-button:disabled .copy-button__animated-text {
+.copy-button:hover {
+    color: white;
+}
+
+.copy-button:hover .copy-svg * {
+    fill: white;
+}
+
+/* .copy-button:disabled .copy-button__animated-text {
     color: darkgrey;
 }
 
 .copy-button:disabled .copy-svg * {
     fill: darkgrey;
-}
+} */
 
 .copy-button__animated-text-container {
     position: relative;
@@ -48,7 +117,7 @@
 
 /* disappearance animation of a front text layer*/
 .copy-button--copied-state .copy-button__animated-text:last-child {
-    transition: clip-path var(--animation-duration) linear;
+    transition: clip-path var(--copy-text-animation-duration) linear;
     clip-path: inset(0 0 0 100%);
     overflow: hidden;
 }
@@ -81,7 +150,7 @@
     position: absolute;
     left: 0px;
     opacity: 0;
-    transition: left var(--animation-duration) linear;
+    transition: left var(--copy-text-animation-duration) linear;
 }
 
 /* for appearance*/
@@ -95,7 +164,7 @@
     position: absolute;
     left: 0px;
     opacity: 0;
-    transition: left var(--animation-duration) linear;
+    transition: left var(--copy-text-animation-duration) linear;
 }
 
 /* animation of the rectangle */
@@ -103,14 +172,14 @@
 .copy-button--copy-state .copy-button__animated-text::after {
     opacity: 1;
     left: 100%;
-    animation: rectangle-disappearance 0s linear forwards var(--animation-duration);
+    animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
 }
 
 /* for appearance*/
 .copy-button--copied-state .copy-button__animated-text::before {
     opacity: 1;
     left: 100%;
-    animation: rectangle-disappearance 0s linear forwards var(--animation-duration);
+    animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
 }
 
 
@@ -125,13 +194,13 @@
 }
 
 .copy-button--copied-state .copy-button__animated-text:first-child span {
-    animation: letter-bounce calc(var(--animation-duration) * 0.3) ease-out;
-    animation-delay: calc(var(--animation-duration) / var(--string-length) * var(--id));
+    animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.3) ease-out;
+    animation-delay: calc(var(--copy-text-animation-duration) / var(--string-length) * var(--id));
 }
 
 .copy-button--copy-state .copy-button__animated-text:nth-child(2) span {
-    animation: letter-bounce calc(var(--animation-duration) * 0.3) ease-out;
-    animation-delay: calc(var(--animation-duration) / var(--string-length) * var(--id));
+    animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.3) ease-out;
+    animation-delay: calc(var(--copy-text-animation-duration) / var(--string-length) * var(--id));
 }
 
 @keyframes letter-bounce {
@@ -155,14 +224,14 @@
 
 /* bounce of a "copy" button text's svg icon when state is "copied" */
 .copy-button--copied-state .copy-button__animated-text-container .copy-button__animated-text:nth-child(1) .copy-svg {
-    animation: letter-bounce calc(var(--animation-duration) * 0.7) ease-out;
-    animation-delay: var(--animation-duration);
+    animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
+    animation-delay: var(--copy-text-animation-duration);
 }
 
 /* bounce of a "copied" button text's svg icon when state is "copy" */
 .copy-button--copy-state .copy-button__animated-text-container .copy-button__animated-text:nth-child(2) .copy-svg {
-    animation: letter-bounce calc(var(--animation-duration) * 0.7) ease-out;
-    animation-delay: var(--animation-duration);
+    animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
+    animation-delay: var(--copy-text-animation-durationn);
 }
 
 .copy-svg * {
@@ -174,4 +243,28 @@
 
 .text-block__divider div {
     border-color: var(--color-font);
+}
+
+@keyframes letter-bounce-loading {
+    0% {
+        translate: 0px 0px;
+    }
+
+    10% {
+        translate: 0px -2px;
+    }
+
+    20% {
+        translate: 0px 0px;
+    }
+
+    100% {
+        translate: 0px 0px;
+    }
+}
+
+.copy-button__loading-text span {
+    display: inline-block;
+    animation: letter-bounce-loading 1s ease-out infinite;
+    animation-delay: calc(0.1s * var(--id));
 }
