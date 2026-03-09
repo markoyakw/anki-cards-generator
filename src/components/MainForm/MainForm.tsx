@@ -4,19 +4,16 @@ import PromptValueSelect from './PromptValueSelect/PromptValueSelect'
 import MyDividerLine from '../UI/MyDividerLine/MyDividerLine'
 import MyTextarea from '../UI/MyTextarea/MyTextarea'
 import classes from "./MainForm.module.css"
-import { GoogleGenAI } from '@google/genai'
 import MyCopyableTextBlock from '../UI/MyCopyableTextBlock/MyCopyableTextBlock'
 import { LANGUAGE_TO_LEARN_OPTIONS, LEVEL_OF_LANGUAGE_OPTIONS, NATIVE_LANGUAGE_OPTIONS, type TFormValues } from '../../constants/mainForm'
-import buildPrompt from '../../lib/buildPrompt'
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import MyError from '../UI/MyError/MyError'
+import useDeckResult from './useDeckResult'
 
 const MainForm = () => {
 
     const MINIMAL_LIST_OF_WORDS_STRING_LENGTH = 20
-    const [deckResult, setDeckResult] = useState<string>("")
-    const [isLoading, setIsLoading] = useState(false)
-    const [isStreaming, setIsStreaming] = useState(false)
+    const { generateDeck, isLoading, isStreaming, deckResult } = useDeckResult()
     const [isTextBlockCollapsed, setIsTextBlockCollapsed] = useState(true)
     const toggleIsTextBlockCollapsed = () => setIsTextBlockCollapsed(oldState => !oldState)
 
@@ -24,36 +21,6 @@ const MainForm = () => {
         mode: "onTouched",
         reValidateMode: "onChange"
     });
-
-    const googleAiApiKey = import.meta.env.VITE_GOOGLE_AI_KEY
-    const ai = new GoogleGenAI({ apiKey: googleAiApiKey });
-
-    async function generateDeck(data: TFormValues) {
-        if (!data["language-to-learn-select"] || !data["level-of-language-select"] || !data["native-language-select"] || !data["prompt-words-to-process"]) throw new Error("One of needed parameters is unefined")
-        setIsLoading(true)
-        setDeckResult("")
-
-        try {
-            const prompt = buildPrompt(data)
-            const response = await ai.models.generateContentStream({
-                model: "gemini-2.5-flash",
-                contents: prompt
-            });
-
-            for await (const chunk of response) {
-                setIsStreaming(true)
-                setIsLoading(false)
-                setDeckResult(oldData => oldData + chunk.text);
-            }
-        }
-        catch (e) {
-            console.error("Streaming error", e)
-        }
-        finally {
-            setIsLoading(false)
-            setIsStreaming(false)
-        }
-    }
 
     const onSubmit: SubmitHandler<TFormValues> = (data) => {
         generateDeck(data)
@@ -126,6 +93,7 @@ const MainForm = () => {
                     </div>
                 </div>
             </form >
+            
             {deckResult &&
                 <MyCopyableTextBlock id='deck-result' label={`${getValues("native-language-select")}-${getValues("language-to-learn-select")}-${getValues("level-of-language-select")}`} isCollapsed={isTextBlockCollapsed} toggleIsTextBlockCollapsed={toggleIsTextBlockCollapsed} isLoading={isStreaming}>
                     {deckResult}

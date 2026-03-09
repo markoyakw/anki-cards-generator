@@ -69,7 +69,6 @@ const MyCopyableTextBlock: FC<TMyCopyableTextBlockProps> = ({
         const container = containerRef.current
         if (!container) return
         const lineHeight = getComputedStyle(container).lineHeight
-        console.log(lineHeight)
         container.style.setProperty("--line-height", lineHeight)
     }, [])
 
