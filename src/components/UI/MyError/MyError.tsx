@@ -8,7 +8,7 @@ type TMyErrorProps = {
 const MyError: FC<TMyErrorProps> = ({ children }) => {
     if (!children) return <></>
     return (
-        <div className={classes["error"]}>{children}</div>
+        <div className={classes["error"]}>⚠ {children}</div>
     )
 }
 

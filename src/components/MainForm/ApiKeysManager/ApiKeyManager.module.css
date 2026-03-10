@@ -1,0 +1,8 @@
+.key-manager-container {
+    display: flex;
+    gap: var(--spacing-s);
+}
+
+.key-manager-container input {
+    flex-grow: 1;
+}

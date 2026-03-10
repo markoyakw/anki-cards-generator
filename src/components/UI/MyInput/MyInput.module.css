@@ -1,0 +1,9 @@
+.input {
+    background-color: var(--color-background);
+    border: var(--border);
+    border-radius: var(--radius-m);
+    outline: none;
+    color: var(--color-font);
+    height: 40px;
+    padding: var(--padding-card);
+}
