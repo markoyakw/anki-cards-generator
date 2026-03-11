@@ -1,9 +1,33 @@
+.input__container {
+    position: relative;
+}
+
 .input {
     background-color: var(--color-background);
     border: var(--border);
     border-radius: var(--radius-m);
     outline: none;
     color: var(--color-font);
-    height: 40px;
+    height: 30px;
     padding: var(--padding-card);
+}
+
+.input__label {
+    display: flex;
+    align-items: center;
+    height: 1em;
+    border-radius: 7px;
+    padding: var(--spacing-xs);
+    font-size: inherit;
+    position: absolute;
+    bottom: calc(50% - 0.75em);
+    left: var(--spacing-xs);
+    transition: all 0.1s;
+}
+
+.input:focus+.input__label,
+.input:not(:placeholder-shown)+.input__label {
+    scale: 0.9;
+    background-color: var(--color-secondary);
+    bottom: calc(100% - 0.5em);
 }

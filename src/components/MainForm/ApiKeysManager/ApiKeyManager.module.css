@@ -4,5 +4,9 @@
 }
 
 .key-manager-container input {
+    max-width: 50%;
+}
+
+.key-manager-container button {
     flex-grow: 1;
 }

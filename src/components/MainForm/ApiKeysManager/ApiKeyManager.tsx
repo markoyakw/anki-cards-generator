@@ -25,7 +25,7 @@ const ApiKeyManager = () => {
         const checkIfKeyValidOnAppStart = async () => {
             const storedKey = window.localStorage.getItem("apiKey")
             if (!storedKey) return
-            await sendAiRequest("ping")
+            const response = await sendAiRequest("ping")
             if (!error && response) {
                 setValidLocalKey(storedKey)
             }
@@ -33,11 +33,11 @@ const ApiKeyManager = () => {
         checkIfKeyValidOnAppStart()
     }, [])
 
-    console.log(error, response)
 
     return (
         <div className={classes["key-manager-container"]}>
-            <MyInput value={newKey} onChange={onKeyChange} type="password" />
+            <MyInput label="bebra" value={newKey} onChange={onKeyChange} />
+            {validLocalKey ? "✓" : ""}
             <MyButton onClick={onApiKeySave}>set API key</MyButton>
         </div>
     )
