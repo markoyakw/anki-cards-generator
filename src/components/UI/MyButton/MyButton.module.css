@@ -3,7 +3,6 @@
     border: none;
     border-radius: var(--radius-m);
     height: 40px;
-    align-self: center;
     color: var(--color-text);
     font-size: var(--font-size-xl);
     cursor: pointer;

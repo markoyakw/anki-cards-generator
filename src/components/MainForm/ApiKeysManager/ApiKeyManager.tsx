@@ -1,44 +1,51 @@
-import { useEffect, useState, type ChangeEvent } from "react"
+import { useEffect, useRef, type FC } from "react"
 import MyButton from "../../UI/MyButton/MyButton"
 import MyInput from "../../UI/MyInput/MyInput"
 import classes from "./ApiKeyManager.module.css"
-import useSendAiRequest from "../../../hooks/useSendAiRequest"
+import { FaSave } from "react-icons/fa"
+import { ImCheckmark } from "react-icons/im"
+import { Controller, type Control } from "react-hook-form"
+import type { TFormValues } from "../../../constants/mainForm"
+import type useApiKeyManager from "./useApiKeyManager"
 
-const ApiKeyManager = () => {
+type TApiKeyManagerProps = {
+    control: Control<TFormValues>
+    apiKey: string
+} & ReturnType<typeof useApiKeyManager>
 
-    const [validLocalKey, setValidLocalKey] = useState<null | string>(null)
-    const [newKey, setNewKey] = useState("")
-    const { error, sendAiRequest, response } = useSendAiRequest(newKey)
+const ApiKeyManager: FC<TApiKeyManagerProps> = ({ control, onNewApiKeySave, validLocalKey, isKeyCheckLoading, keyCheckError, apiKey }) => {
 
-    const onKeyChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setNewKey(e.target.value)
-    }
-    const onApiKeySave = async () => {
-        //ping to check if the key is valid, in that case save it to a localStorage
-        const responseObj = await sendAiRequest("ping")
-        if (!responseObj.error && responseObj.message) {
-            window.localStorage.setItem("apiKey", newKey)
-        }
-    }
-
+    const apiKeyValueRef = useRef<string>("")
     useEffect(() => {
-        const checkIfKeyValidOnAppStart = async () => {
-            const storedKey = window.localStorage.getItem("apiKey")
-            if (!storedKey) return
-            const response = await sendAiRequest("ping")
-            if (!error && response) {
-                setValidLocalKey(storedKey)
-            }
+        if (keyCheckError) {
+            control.setError("new-api-key", { message: "please, provide a valid Google AI Studio API key" })
         }
-        checkIfKeyValidOnAppStart()
-    }, [])
-
+        else {
+            control.setError("new-api-key", {})
+        }
+    }, [keyCheckError])
 
     return (
-        <div className={classes["key-manager-container"]}>
-            <MyInput label="bebra" value={newKey} onChange={onKeyChange} />
-            {validLocalKey ? "✓" : ""}
-            <MyButton onClick={onApiKeySave}>set API key</MyButton>
+        <div className={classes["key-manager__container"]}>
+
+            {validLocalKey
+                ? <ImCheckmark className={`${classes["key-manager__status-icon"]} ${classes["key-manager__status-icon--success"]}`} />
+                : <div className={`${classes["key-manager__status-icon"]}  ${classes["key-manager__status-icon--error"]}`}>!</div>
+            }
+
+            <Controller control={control} name="new-api-key"
+                rules={{
+                    required: "please, provide an API key"
+                }}
+                render={({ field }) => {
+                    apiKeyValueRef.current = field.value
+                    return <MyInput label="new API key" {...field} />
+                }}
+            />
+
+            <MyButton onClick={() => onNewApiKeySave(apiKeyValueRef.current)} loading={isKeyCheckLoading} type="button">
+                <FaSave />
+            </MyButton>
         </div>
     )
 }

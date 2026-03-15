@@ -10,6 +10,7 @@ import MyError from '../UI/MyError/MyError'
 import useDeckResult from './useDeckResult'
 import ApiKeyManager from './ApiKeysManager/ApiKeyManager'
 import LanguageSelects from './LanguageSelects'
+import useApiKeyManager from './ApiKeysManager/useApiKeyManager'
 
 const MainForm = () => {
 
@@ -22,6 +23,7 @@ const MainForm = () => {
         mode: "onTouched",
         reValidateMode: "onChange"
     });
+    const keyManagerProps = useApiKeyManager()
 
     const onSubmit: SubmitHandler<TFormValues> = (data) => {
         generateDeck(data)
@@ -60,7 +62,7 @@ const MainForm = () => {
                             errors["level-of-language-select"]?.message || errors["root"]?.message || errors["native-language-select"]?.message}
                     </MyError>
 
-                    <ApiKeyManager />
+                    <ApiKeyManager control={control} {...keyManagerProps} apiKey={getValues("new-api-key")} />
 
                     <div className={classes["form__button"]}>
                         <MyButton type='submit' disabled={!isValid && isDirty && isSubmitted} loading={isLoading}>

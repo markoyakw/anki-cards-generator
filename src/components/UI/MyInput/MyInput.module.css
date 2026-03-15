@@ -1,33 +1,39 @@
 .input__container {
     position: relative;
+    padding-top: 10px;
 }
 
 .input {
+    color: var(--color-font);
     background-color: var(--color-background);
     border: var(--border);
     border-radius: var(--radius-m);
     outline: none;
-    color: var(--color-font);
     height: 40px;
     padding: var(--padding-card);
+    width: 100%;
 }
 
 .input__label {
+    pointer-events: none;
+    color: var(--color-secondary);
     display: flex;
     align-items: center;
-    height: 1em;
+    height: 1.2em;
+    padding: 0px var(--spacing-xs);
     border-radius: 15px;
-    padding: var(--spacing-xs);
     font-size: inherit;
     position: absolute;
-    bottom: calc(50% - 0.75em);
+    bottom: calc(50% - 0.5em - 7.5px);
     left: var(--spacing-xs);
     transition: all 0.1s;
 }
 
 .input:focus+.input__label,
 .input:not(:placeholder-shown)+.input__label {
+    color: var(--color-font);
     scale: 0.9;
+    transform-origin: 50% 0%;
     background-color: var(--color-secondary);
-    bottom: calc(100% - 0.5em);
+    bottom: calc(100% - 1.2em);
 }

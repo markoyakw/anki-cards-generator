@@ -10,10 +10,11 @@ const MyInput: FC<MyInputProps> = ({ id, label, ...props }) => {
 
     const generatedId = useId()
     const inputId = id || generatedId
+    const value = props.value
 
     return (
         <div className={classes["input__container"]}>
-            <input id={inputId} className={classes["input"]} {...props} placeholder='' />
+            <input id={inputId} className={classes["input"]} {...props} value={value || ""} placeholder='' />
             {label &&
                 <label className={classes["input__label"]} htmlFor={inputId}>
                     {label}

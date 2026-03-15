@@ -3,20 +3,20 @@ import { useState } from "react"
 // const googleAiApiKey = import.meta.env.VITE_GOOGLE_AI_KEY
 // const ai = new GoogleGenAI({ apiKey: googleAiApiKey });
 
-const useSendAiRequest = (googleAiApiKey: string) => {
+const useSendAiRequest = () => {
 
     const [isLoading, setIsLoading] = useState(false)
     const [isStreaming, setIsStreaming] = useState(false)
-    const [response, setResponse] = useState<string | null>(null)
+    const [responseState, setResponseState] = useState<string | null>(null)
     const [error, setError] = useState<string | null>(null)
 
-    const sendAiRequest = async (propmt: string) => {
+    const sendAiRequest = async (propmt: string, apiKey: string) => {
 
         setIsLoading(true)
-        setResponse("")
+        setResponseState("")
 
         try {
-            const ai = new GoogleGenAI({ apiKey: googleAiApiKey })
+            const ai = new GoogleGenAI({ apiKey })
             const response = await ai.models.generateContentStream({
                 model: "gemini-2.5-flash",
                 contents: propmt
@@ -26,7 +26,7 @@ const useSendAiRequest = (googleAiApiKey: string) => {
                 setError(null)
                 setIsStreaming(true)
                 setIsLoading(false)
-                setResponse(oldData => {
+                setResponseState(oldData => {
                     if (!oldData) return "" + chunk.text
                     return oldData + chunk.text
                 });
@@ -49,7 +49,7 @@ const useSendAiRequest = (googleAiApiKey: string) => {
         }
     }
 
-    return { isLoading, isStreaming, response, sendAiRequest, error }
+    return { isLoading, isStreaming, responseState, sendAiRequest, error }
 }
 
 export default useSendAiRequest
