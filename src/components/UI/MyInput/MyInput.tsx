@@ -14,7 +14,7 @@ const MyInput: FC<MyInputProps> = ({ id, label, ...props }) => {
 
     return (
         <div className={classes["input__container"]}>
-            <input id={inputId} className={classes["input"]} {...props} value={value || ""} placeholder='' />
+            <input id={inputId} className={classes["input"]} {...props} value={value || ""} placeholder='' autoComplete='off' />
             {label &&
                 <label className={classes["input__label"]} htmlFor={inputId}>
                     {label}

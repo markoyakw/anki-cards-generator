@@ -19,14 +19,21 @@ const MainForm = () => {
     const [isTextBlockCollapsed, setIsTextBlockCollapsed] = useState(true)
     const toggleIsTextBlockCollapsed = () => setIsTextBlockCollapsed(oldState => !oldState)
 
-    const { handleSubmit, control, getValues, formState: { errors, isValid, isDirty, isSubmitted } } = useForm<TFormValues>({
+    const { handleSubmit, control, watch, getValues, formState: { errors, isValid, isDirty, isSubmitted } } = useForm<TFormValues>({
         mode: "onTouched",
         reValidateMode: "onChange"
     });
-    const keyManagerProps = useApiKeyManager()
 
-    const onSubmit: SubmitHandler<TFormValues> = (data) => {
-        generateDeck(data)
+    const keyManagerProps = useApiKeyManager()
+    const validLocalKey = keyManagerProps.validLocalKey
+    const isSubmitButtonDisabled = (!isValid && isDirty && isSubmitted) || !validLocalKey
+
+    const onSubmit: SubmitHandler<TFormValues> = async (data) => {
+        if (!validLocalKey) throw new Error("the API key is not provided")
+        const res = await generateDeck(data, validLocalKey)
+        if (res.error) {
+            control.setError("new-api-key", { message: res.error })
+        }
     }
 
     return (
@@ -62,10 +69,14 @@ const MainForm = () => {
                             errors["level-of-language-select"]?.message || errors["root"]?.message || errors["native-language-select"]?.message}
                     </MyError>
 
-                    <ApiKeyManager control={control} {...keyManagerProps} apiKey={getValues("new-api-key")} />
+                    <ApiKeyManager watch={watch} control={control} {...keyManagerProps} apiKey={getValues("new-api-key")} />
+
+                    <MyError>
+                        {errors["new-api-key"]?.message}
+                    </MyError>
 
                     <div className={classes["form__button"]}>
-                        <MyButton type='submit' disabled={!isValid && isDirty && isSubmitted} loading={isLoading}>
+                        <MyButton type='submit' disabled={isSubmitButtonDisabled} loading={isLoading}>
                             generate
                         </MyButton>
                     </div>

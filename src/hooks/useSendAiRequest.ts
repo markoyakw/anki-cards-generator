@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { useState } from "react"
+import parseGoogleError from "../functions/parseGoogleError";
 // const googleAiApiKey = import.meta.env.VITE_GOOGLE_AI_KEY
 // const ai = new GoogleGenAI({ apiKey: googleAiApiKey });
 
@@ -8,9 +9,8 @@ const useSendAiRequest = () => {
     const [isLoading, setIsLoading] = useState(false)
     const [isStreaming, setIsStreaming] = useState(false)
     const [responseState, setResponseState] = useState<string | null>(null)
-    const [error, setError] = useState<string | null>(null)
 
-    const sendAiRequest = async (propmt: string, apiKey: string) => {
+    const sendAiRequest = async (propmt: string, apiKey: string): Promise<{ message: string | null, error: string | null, code: number | undefined }> => {
 
         setIsLoading(true)
         setResponseState("")
@@ -23,7 +23,6 @@ const useSendAiRequest = () => {
             });
 
             for await (const chunk of response) {
-                setError(null)
                 setIsStreaming(true)
                 setIsLoading(false)
                 setResponseState(oldData => {
@@ -31,16 +30,16 @@ const useSendAiRequest = () => {
                     return oldData + chunk.text
                 });
             }
-            return { message: response, error: null }
+
+            return { message: "the answer was generated successfully", error: null, code: 200 }
         }
         catch (e) {
             if (e instanceof Error) {
-                setError(e.message)
-                return { message: null, error: e.message }
+                const parsedError = parseGoogleError(e)
+                return { message: null, error: parsedError.message, code: parsedError.code }
             }
             else {
-                setError("An unexpected error occured, try later")
-                return { message: null, error: "An unexpected error occured, try later" }
+                return { message: null, error: "An unexpected error occured, try later", code: 500 }
             }
         }
         finally {
@@ -49,7 +48,7 @@ const useSendAiRequest = () => {
         }
     }
 
-    return { isLoading, isStreaming, responseState, sendAiRequest, error }
+    return { isLoading, isStreaming, responseState, sendAiRequest }
 }
 
 export default useSendAiRequest
