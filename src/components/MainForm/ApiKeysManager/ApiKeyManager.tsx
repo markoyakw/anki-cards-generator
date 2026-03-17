@@ -1,4 +1,4 @@
-import { useState, type FC } from "react"
+import { useState, type CSSProperties, type FC } from "react"
 import MyButton from "../../UI/MyButton/MyButton"
 import MyInput from "../../UI/MyInput/MyInput"
 import classes from "./ApiKeyManager.module.css"
@@ -7,6 +7,8 @@ import { ImCheckmark } from "react-icons/im"
 import { Controller, type Control, type UseFormWatch } from "react-hook-form"
 import type { TFormValues } from "../../../constants/mainForm"
 import type useApiKeyManager from "./useApiKeyManager"
+import MyLink from "../../UI/MyLink/MyLink"
+import { BsFillPatchQuestionFill } from "react-icons/bs"
 
 type TApiKeyManagerProps = {
     control: Control<TFormValues>
@@ -17,6 +19,7 @@ type TApiKeyManagerProps = {
 const ApiKeyManager: FC<TApiKeyManagerProps> = ({ control, onNewApiKeySave, validLocalKey, isKeyCheckLoading, watch }) => {
 
     const newApiKey = watch("new-api-key")
+    const showGetApiKeyTip = true
 
     const [error, setError] = useState<string | null>(null)
 
@@ -30,27 +33,41 @@ const ApiKeyManager: FC<TApiKeyManagerProps> = ({ control, onNewApiKeySave, vali
 
     return (
         <div className={classes["key-manager__container"]}>
-
             {/* valid/invalid icons */}
-            {validLocalKey
-                ? <ImCheckmark className={`${classes["key-manager__status-icon"]} ${classes["key-manager__status-icon--success"]}`} />
-                : <div className={`${classes["key-manager__status-icon"]}  ${classes["key-manager__status-icon--error"]}`}>!</div>
+            <div className={classes["key-manager__input-row"]}>
+                {validLocalKey
+                    ? <ImCheckmark className={`${classes["key-manager__status-icon"]} ${classes["key-manager__status-icon--success"]}`} />
+                    : <div className={`${classes["key-manager__status-icon"]}  ${classes["key-manager__status-icon--error"]}`}>!</div>
+                }
+
+                <Controller control={control} name="new-api-key"
+                    render={({ field }) => {
+                        return <MyInput label="new API key" {...field} />
+                    }}
+                    rules={{
+                        validate: () => {
+                            return error || true
+                        }
+                    }}
+                />
+
+                <MyButton onClick={saveNewApiKeyHandler} loading={isKeyCheckLoading} type="button" disabled={!newApiKey}>
+                    <FaSave />
+                </MyButton>
+            </div>
+
+            {showGetApiKeyTip &&
+                <div className={classes["key-manager__tip-container"]}>
+                    <span style={{ animation: "color-change 7s linear infinite" } as CSSProperties}>
+                        <BsFillPatchQuestionFill />
+                    </span>
+                    &nbsp;
+                    <MyLink href="https://aistudio.google.com/api-keys" newTab>
+                        get a Google Studio AI API key
+                    </MyLink>
+                </div>
             }
 
-            <Controller control={control} name="new-api-key"
-                render={({ field }) => {
-                    return <MyInput label="new API key" {...field} />
-                }}
-                rules={{
-                    validate: () => {
-                        return error || true
-                    }
-                }}
-            />
-
-            <MyButton onClick={saveNewApiKeyHandler} loading={isKeyCheckLoading} type="button" disabled={!newApiKey}>
-                <FaSave />
-            </MyButton>
         </div >
     )
 }

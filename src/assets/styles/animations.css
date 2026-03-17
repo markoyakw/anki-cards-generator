@@ -1,0 +1,34 @@
+
+@keyframes color-change {
+    0% {
+        color: var(--color-font);
+    }
+
+    10% {
+        color: var(--color-accent-animation-1);
+    }
+
+    20% {
+        color: var(--color-accent-animation-2);
+    }
+
+    30% {
+        color: var(--color-accent-animation-3);
+    }
+
+    40% {
+        color: var(--color-font);
+    }
+
+    60% {
+        color: var(--color-accent-animation-2);
+    }
+
+    80% {
+        color: var(--color-accent-animation-1);
+    }
+
+    100% {
+        color: var(--color-font);
+    }
+}

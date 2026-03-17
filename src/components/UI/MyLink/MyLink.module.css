@@ -1,0 +1,7 @@
+.link {
+    color: var(--color-font);
+}
+
+.link__letter {
+    animation: color-change 7s infinite calc((var(--index) * 0.02s)) linear;
+}
