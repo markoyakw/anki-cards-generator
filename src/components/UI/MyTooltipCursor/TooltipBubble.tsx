@@ -12,17 +12,17 @@ const TooltipBubble: FC<BubbleProps> = ({
     visible,
     offset,
 }) => {
-    const bubbleRef = useRef<HTMLDivElement>(null);
-    const rafRef = useRef<number | null>(null);
+    const bubbleRef = useRef<HTMLDivElement>(null)
+    const rafRef = useRef<number | null>(null)
 
     // Run a loop when visible to reposition the bubble
     useLayoutEffect(() => {
-        if (!visible) return;
+        if (!visible) return
 
         function tick() {
-            const el = bubbleRef.current;
+            const el = bubbleRef.current
             if (!el) {
-                rafRef.current = requestAnimationFrame(tick);
+                rafRef.current = requestAnimationFrame(tick)
                 return;
             }
 
@@ -31,19 +31,18 @@ const TooltipBubble: FC<BubbleProps> = ({
             const vw = window.innerWidth
             const vh = window.innerHeight
 
-            let x = 0;
-            let y = 0;
+            let x = 0
+            let y = 0
 
-            const halfVw = vw / 2;
+            const halfVw = vw / 2
             if (mousePos.current.x < halfVw) {
                 // cursor on left = tooltip to the right
                 x = mousePos.current.x + offset;
             } else {
                 // cursor on right = tooltip to the left
-                x = mousePos.current.x - bw - offset;
+                x = mousePos.current.x - bw - offset
             }
-
-            y = mousePos.current.y - bh / 2;
+            y = mousePos.current.y - bh / 2
 
             // set position to viewport + padding when near
             x = Math.max(VIEWPORT_PADDING, Math.min(x, vw - bw - VIEWPORT_PADDING))
@@ -53,7 +52,7 @@ const TooltipBubble: FC<BubbleProps> = ({
             rafRef.current = requestAnimationFrame(tick)
         }
 
-        rafRef.current = requestAnimationFrame(tick);
+        rafRef.current = requestAnimationFrame(tick)
         return () => {
             if (rafRef.current !== null) cancelAnimationFrame(rafRef.current)
         };

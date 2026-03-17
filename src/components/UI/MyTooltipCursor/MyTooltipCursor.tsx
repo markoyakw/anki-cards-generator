@@ -13,30 +13,43 @@ export const TooltipCursor: FC<TooltipCursorProps> = ({
     className,
     style,
 }) => {
-    const [visible, setVisible] = useState(false);
-    const mousePosition = useMousePosition();
-    const anchorRef = useRef<HTMLDivElement>(null);
-    const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-    const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const [visible, setVisible] = useState(false)
+    const mousePosition = useMousePosition()
+    const anchorRef = useRef<HTMLDivElement>(null)
+    const enterTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+    const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
 
     const clearTimers = useCallback(() => {
-        if (enterTimer.current !== null) clearTimeout(enterTimer.current);
-        if (leaveTimer.current !== null) clearTimeout(leaveTimer.current);
+        if (enterTimer.current !== null) clearTimeout(enterTimer.current)
+        if (leaveTimer.current !== null) clearTimeout(leaveTimer.current)
     }, []);
 
     const handleEnter = useCallback(() => {
         if (disabled) return;
-        clearTimers();
-        enterTimer.current = setTimeout(() => setVisible(true), enterDelay);
-    }, [disabled, clearTimers, enterDelay]);
+        clearTimers()
+        enterTimer.current = setTimeout(() => setVisible(true), enterDelay)
+    }, [disabled, clearTimers, enterDelay])
 
     const handleLeave = useCallback(() => {
-        clearTimers();
-        leaveTimer.current = setTimeout(() => setVisible(false), leaveDelay);
-    }, [clearTimers, leaveDelay]);
+        clearTimers()
+        leaveTimer.current = setTimeout(() => setVisible(false), leaveDelay)
+    }, [clearTimers, leaveDelay])
+
+    useEffect(() => {
+        let timer: ReturnType<typeof setTimeout>;
+
+        const hide = () => {timer = setTimeout(() => setVisible(false), 100)}
+
+        document.addEventListener("visibilitychange", hide)
+
+        return () => {
+            document.removeEventListener("visibilitychange", hide)
+            clearTimeout(timer)
+        }
+    }, [])
 
     // Cleanup timers on unmount
-    useEffect(() => () => clearTimers(), [clearTimers]);
+    useEffect(() => () => clearTimers(), [clearTimers])
 
     return (
         <>
