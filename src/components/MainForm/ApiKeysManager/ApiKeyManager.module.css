@@ -51,3 +51,7 @@
     display: flex;
     align-items: center;
 }
+
+.key-manager__tip-questionmark-icon {
+    font-size: 25px;
+}

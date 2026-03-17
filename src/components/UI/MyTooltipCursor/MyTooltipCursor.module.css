@@ -1,0 +1,9 @@
+.tooltip-bubble {
+    position: relative;
+    background-color: var(--color-accent-2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--color-font);
+    padding: 0px var(--spacing-s);
+    border-radius: var(--radius-l);
+}

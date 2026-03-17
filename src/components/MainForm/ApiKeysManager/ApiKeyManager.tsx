@@ -1,4 +1,4 @@
-import { useState, type CSSProperties, type FC } from "react"
+import { useState, type FC } from "react"
 import MyButton from "../../UI/MyButton/MyButton"
 import MyInput from "../../UI/MyInput/MyInput"
 import classes from "./ApiKeyManager.module.css"
@@ -7,8 +7,7 @@ import { ImCheckmark } from "react-icons/im"
 import { Controller, type Control, type UseFormWatch } from "react-hook-form"
 import type { TFormValues } from "../../../constants/mainForm"
 import type useApiKeyManager from "./useApiKeyManager"
-import MyLink from "../../UI/MyLink/MyLink"
-import { BsFillPatchQuestionFill } from "react-icons/bs"
+import ApiKeyTip from "./ApiKeyTip"
 
 type TApiKeyManagerProps = {
     control: Control<TFormValues>
@@ -19,9 +18,8 @@ type TApiKeyManagerProps = {
 const ApiKeyManager: FC<TApiKeyManagerProps> = ({ control, onNewApiKeySave, validLocalKey, isKeyCheckLoading, watch }) => {
 
     const newApiKey = watch("new-api-key")
-    const showGetApiKeyTip = true
-
     const [error, setError] = useState<string | null>(null)
+    const isGetApiKeyTipShown = !validLocalKey && !isKeyCheckLoading
 
     const saveNewApiKeyHandler = async () => {
         const res = await onNewApiKeySave(newApiKey)
@@ -56,17 +54,7 @@ const ApiKeyManager: FC<TApiKeyManagerProps> = ({ control, onNewApiKeySave, vali
                 </MyButton>
             </div>
 
-            {showGetApiKeyTip &&
-                <div className={classes["key-manager__tip-container"]}>
-                    <span style={{ animation: "color-change 7s linear infinite" } as CSSProperties}>
-                        <BsFillPatchQuestionFill />
-                    </span>
-                    &nbsp;
-                    <MyLink href="https://aistudio.google.com/api-keys" newTab>
-                        get a Google Studio AI API key
-                    </MyLink>
-                </div>
-            }
+            <ApiKeyTip isShown={isGetApiKeyTipShown} />
 
         </div >
     )
