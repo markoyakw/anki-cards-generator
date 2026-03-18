@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# Anki Cards Generator
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A web application that uses AI to generate high-quality Anki flashcards with real-world word usage examples, tips, and nuances — in both your native and target language.
 
-Currently, two official plugins are available:
+🔗 **Live demo:** [anki-cards-generator.vercel.app](https://anki-cards-generator.vercel.app)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## ✨ Features
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+- 🤖 AI-powered flashcard generation via Google Gemini
+- 📝 Usage examples in both native and target language
+- 💡 Tips and nuances for each word (connotations, register, common mistakes)
+- 🎯 Adjustable difficulty based on your language level
+- 📦 Export-ready cards for Anki import
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## ⚙️ Configuration
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Before using the app, you need a **Google Gemini API key**.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Get your free key here: [aistudio.google.com/api-keys](https://aistudio.google.com/api-keys)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### Fields
+
+| Field | Description |
+|---|---|
+| **Native language** | The language you already speak fluently — used for translations and explanations |
+| **Language you learn** | The target language for which cards will be generated |
+| **Level** | Your proficiency level (A1–C2) — controls the complexity of examples and vocabulary used in generated cards |
+
+---
+
+## 🚀 Usage
+
+### Option 1 — Use online
+
+Just open [anki-cards-generator.vercel.app](https://anki-cards-generator.vercel.app), enter your API key, fill in the fields, and start generating cards.
+
+### Option 2 — Run locally
+
+**Requirements:** [Node.js](https://nodejs.org/) (v18+)
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/your-username/anki-cards-generator.git
+cd anki-cards-generator
+
+# 2. Install dependencies
+npm install
+
+# 3. Start the development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The app will be available at `http://localhost:5173`.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+To create a production build:
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run preview
 ```
+
+---
+
+## 🗺️ Roadmap
+
+Planned improvements for future releases:
+
+- 🔊 **Auto-generated audio pronunciation** — via a Node.js script that modifies Anki files directly, with a choice of voice and TTS API provider
+- 🌍 **Broader language support** — expand the list of supported native and target languages
+- 🧠 **Improved prompts** — better card structure, smarter examples, and more accurate nuance detection
+- 🗂️ **Collapsible textarea** — automatically collapse the input area while a card is being generated
+- 💾 **Persistent settings** — save the last used language and level configuration in `localStorage`
+
+---
+
+## 🔑 API Key
+
+This app uses the [Google Gemini API](https://aistudio.google.com/api-keys). It has **no backend** — your key is stored in your browser's `localStorage` and never sent to any third-party server.
+
+> ⚠️ **Security notice:** Because there is no backend, the API key is stored in `localStorage` and is more exposed than in a server-side setup. It is strongly recommended to use only **free-tier keys** with no billing attached. The author takes no responsibility for any unauthorized use or charges resulting from a compromised key.
