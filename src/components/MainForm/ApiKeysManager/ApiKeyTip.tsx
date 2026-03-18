@@ -3,8 +3,11 @@ import { BsFillPatchQuestionFill } from 'react-icons/bs'
 import MyLink from '../../UI/MyLink/MyLink'
 import classes from "./ApiKeyManager.module.css"
 import TooltipCursor from '../../UI/MyTooltipCursor/MyTooltipCursor'
+import useSensorScreen from '../../../hooks/useIsSensorScreen'
 
 const ApiKeyTip: FC = () => {
+
+    const isOnSensorScreen = useSensorScreen()
 
     const cursorBubbleContent = <>
         <div>This app needs an API-key</div>
@@ -12,7 +15,7 @@ const ApiKeyTip: FC = () => {
     </>
 
     return (
-        <TooltipCursor content={cursorBubbleContent}>
+        <TooltipCursor disabled={isOnSensorScreen} content={cursorBubbleContent}>
             <div className={classes["key-manager__tip-container"]}>
                 <span style={{ animation: "color-change 7s linear infinite" } as CSSProperties}
                     className={classes["key-manager__tip-questionmark-icon"]}
