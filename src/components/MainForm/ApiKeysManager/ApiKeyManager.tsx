@@ -19,7 +19,6 @@ const ApiKeyManager: FC<TApiKeyManagerProps> = ({ control, onNewApiKeySave, vali
 
     const newApiKey = watch("new-api-key")
     const [error, setError] = useState<string | null>(null)
-    const isGetApiKeyTipShown = !validLocalKey && !isKeyCheckLoading
 
     const saveNewApiKeyHandler = async () => {
         const res = await onNewApiKeySave(newApiKey)
@@ -54,7 +53,7 @@ const ApiKeyManager: FC<TApiKeyManagerProps> = ({ control, onNewApiKeySave, vali
                 </MyButton>
             </div>
 
-            <ApiKeyTip isShown={isGetApiKeyTipShown} />
+            <ApiKeyTip/>
 
         </div >
     )
