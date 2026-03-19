@@ -1,9 +1,11 @@
-import { useEffect, useRef, useState, type CSSProperties, type FC, type HTMLAttributes } from "react"
+import { useEffect, useRef, type FC } from "react"
 import classes from "./MyCopyableTextBlock.module.css"
-import CopySVG from "@assets/svg/copy-svgrepo-com.svg?react"
-import SuccessSVG from "@assets/svg/success-svgrepo-com.svg?react"
 import MyDividerLine from "../MyDividerLine/MyDividerLine"
-import { flushSync } from "react-dom"
+import MyCooldownButton from "../MyCooldownButton/MyCooldownButton"
+import { FaCopy } from "react-icons/fa"
+import { IoIosCheckmarkCircle } from "react-icons/io"
+import { RiFileCopy2Fill } from "react-icons/ri"
+import { MdDownload, MdFileDownload } from "react-icons/md"
 
 type TMyTextBlockProps = {
     children: string,
@@ -25,46 +27,14 @@ const MyCopyableTextBlock: FC<TMyCopyableTextBlockProps> = ({
     toggleIsTextBlockCollapsed
 }) => {
 
-    const copyTextChangeTimerRef = useRef<null | NodeJS.Timeout>(null)
-    const containerRef = useRef<null | HTMLDivElement>(null)
-    //null for initial, uninteracted state for animation handling
-    const [isTextCopied, setIsTextCopied] = useState<boolean | null>(null)
     const containerClassName = `${classes["text-block__container"]} ${isCollapsed ? classes["text-block__container--collapsed"] : classes["text-block__container--expanded"]}`
     const collapseButtonClassName = `${classes["collapse-button"]} ${isCollapsed ? classes["collapse-button--collapsed"] : classes["collapse-button--expanded"]}`
-
-    const COPIED_TEXT = "COPIED"
-    const COPY_TEXT = "COPY"
-    const COPIED_TEXT_CHANGE_DURATION = 3000
+    const containerRef = useRef<null | HTMLDivElement>(null)
 
     const onCopyButtonClick = () => {
-        if (copyTextChangeTimerRef.current) {
-            clearTimeout(copyTextChangeTimerRef.current)
-            flushSync(() => setIsTextCopied(false))
-        }
         navigator.clipboard.writeText(text)
-        setIsTextCopied(true)
-        copyTextChangeTimerRef.current = setTimeout(() => {
-            setIsTextCopied(false)
-        }, COPIED_TEXT_CHANGE_DURATION)
     }
 
-    const getSeparateSymbolsInSpans = (string: string, spanProps?: HTMLAttributes<HTMLSpanElement>) => {
-        return string.split("").map((symbol, symbolId) => {
-            const idCssPropertie = { "--id": symbolId } as CSSProperties
-            return (
-                <span key={symbolId} style={{ ...spanProps?.style, ...idCssPropertie }} >
-                    {symbol}
-                </ span >)
-        })
-    }
-
-    const getSymbolsinStringCountStyle = (string: string) => {
-        return { "--string-length": string.length } as CSSProperties
-    }
-
-    const copyButtonClassname = `${classes["copy-button"]} ${isTextCopied === true && classes["copy-button--copied-state"]} ${isTextCopied === false && classes["copy-button--copy-state"]}`
-
-    //pass a line height to css for right sizing of a minimised text block
     useEffect(() => {
         const container = containerRef.current
         if (!container) return
@@ -78,24 +48,9 @@ const MyCopyableTextBlock: FC<TMyCopyableTextBlockProps> = ({
                 <label htmlFor={id}>
                     {label}
                 </label>
-                {
-                    isLoading
-                        ? <div className={classes["copy-button__loading-text"]}>
-                            {getSeparateSymbolsInSpans("LOADING...")}
-                        </div>
-                        : <button onClick={onCopyButtonClick} className={copyButtonClassname}>
-                            <div className={classes["copy-button__animated-text-container"]}>
-                                <div className={classes["copy-button__animated-text"]} style={getSymbolsinStringCountStyle(COPIED_TEXT)}>
-                                    {getSeparateSymbolsInSpans(COPIED_TEXT)}&nbsp;
-                                    <SuccessSVG className={classes["copy-svg"]} />
-                                </div>
-                                <div className={classes["copy-button__animated-text"]} style={getSymbolsinStringCountStyle(COPY_TEXT)}>
-                                    {getSeparateSymbolsInSpans(COPY_TEXT)}&nbsp;
-                                    <CopySVG className={classes["copy-svg"]} />
-                                </div>
-                            </div>
-                        </button>
-                }
+                <MyCooldownButton CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={RiFileCopy2Fill} cooldownText="COPIED" onClick={onCopyButtonClick} isLoading={isLoading}>
+                    COPY
+                </MyCooldownButton>
             </figcaption>
             <div className={classes["text-block__divider"]}>
                 <MyDividerLine orientation="horisontal" />

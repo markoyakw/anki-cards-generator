@@ -1,0 +1,189 @@
+.cooldown-button {
+    flex-grow: 0;
+    cursor: pointer;
+    color: var(--color-font);
+    border: none;
+    background-color: transparent;
+}
+
+.cooldown-button:hover {
+    color: white;
+}
+
+.cooldown-button:hover .svg-icon * {
+    stroke: white;
+}
+
+.cooldown-button__animated-text-container {
+    position: relative;
+}
+
+.cooldown-button__animated-text {
+    background-color: var(--color-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.cooldown-button__animated-text:last-child {
+    clip-path: inset(0 0 0 0);
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    width: 100%;
+}
+
+/* disappearance animation of a front text layer*/
+.cooldown-button--on-cooldown .cooldown-button__animated-text:last-child {
+    transition: clip-path var(--copy-text-animation-duration) linear;
+    clip-path: inset(0 0 0 100%);
+}
+
+
+/* appearance animation of a front text layer*/
+.cooldown-button--ready .cooldown-button__animated-text:last-child {
+    animation: appearance-animation 0.3s;
+}
+
+@keyframes appearance-animation {
+    0% {
+        clip-path: inset(0 100% 0 0);
+    }
+
+    100% {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+/* rectangle that follows the text change animation */
+/* for disappearance*/
+.cooldown-button__animated-text::after {
+    --rectangle-color: var(--color-secondary);
+    content: "";
+    width: 10px;
+    height: 100%;
+    transform: skew(-10deg);
+    background-color: var(--rectangle-color);
+    position: absolute;
+    left: 0px;
+    opacity: 0;
+    transition: left var(--copy-text-animation-duration) linear;
+}
+
+/* for appearance*/
+.cooldown-button__animated-text::before {
+    --rectangle-color: var(--color-secondary);
+    content: "";
+    width: 10px;
+    height: 100%;
+    transform: skew(-10deg);
+    background-color: var(--rectangle-color);
+    position: absolute;
+    left: 0px;
+    opacity: 0;
+    transition: left var(--copy-text-animation-duration) linear;
+}
+
+/* animation of the rectangle */
+/* for disappearance*/
+.cooldown-button--ready .cooldown-button__animated-text::after {
+    opacity: 1;
+    left: 100%;
+    animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
+}
+
+/* for appearance*/
+.cooldown-button--on-cooldown .cooldown-button__animated-text::before {
+    opacity: 1;
+    left: 100%;
+    animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
+}
+
+
+@keyframes rectangle-disappearance {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0%;
+    }
+}
+
+/* letter spans selectors */
+.cooldown-button--on-cooldown .cooldown-button__animated-text:first-child span,
+.cooldown-button--ready .cooldown-button__animated-text:nth-child(2) span {
+    animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.3) ease-out;
+    animation-delay: calc(var(--copy-text-animation-duration) / var(--string-length) * var(--id));
+}
+
+.cooldown-button__animated-text:first-child span,
+.cooldown-button__animated-text:nth-child(2) span {
+    line-height: 1em;
+}
+/* --------------------- */
+
+@keyframes letter-bounce {
+    0% {
+        translate: 0px 0px;
+    }
+
+    30% {
+        translate: 0px -5px;
+    }
+
+    100% {
+        translate: 0px 0px;
+    }
+}
+
+.svg-icon {
+    width: 1.2em;
+    height: 1.2em;
+    padding-left: var(--spacing-xs);
+}
+
+/* bounce of a "copy" button text's svg icon when state is "copied" */
+.cooldown-button--on-cooldown .cooldown-button__animated-text-container .cooldown-button__animated-text:nth-child(1) .svg-icon {
+    animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
+    animation-delay: var(--copy-text-animation-duration);
+}
+
+/* bounce of a "copied" button text's svg icon when state is "copy" */
+.cooldown-button--ready .cooldown-button__animated-text-container .cooldown-button__animated-text:nth-child(2) .svg-icon {
+    animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
+    animation-delay: var(--copy-text-animation-durationn);
+}
+
+.svg-icon * {
+    width: 1em;
+    height: 1em;
+}
+
+.text-block__divider div {
+    border-color: var(--color-font);
+}
+
+@keyframes letter-bounce-loading {
+    0% {
+        translate: 0px 0px;
+    }
+
+    10% {
+        translate: 0px -2px;
+    }
+
+    20% {
+        translate: 0px 0px;
+    }
+
+    100% {
+        translate: 0px 0px;
+    }
+}
+
+.cooldown-button__loading-text span {
+    display: inline-block;
+    animation: letter-bounce-loading 1s ease-out infinite;
+    animation-delay: calc(0.1s * var(--id));
+}

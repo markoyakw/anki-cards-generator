@@ -1,6 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { useState } from "react"
-import parseGoogleError from "../functions/parseGoogleError";
+import parseGoogleError from "../utils/parseGoogleError";
 // const googleAiApiKey = import.meta.env.VITE_GOOGLE_AI_KEY
 // const ai = new GoogleGenAI({ apiKey: googleAiApiKey });
 
