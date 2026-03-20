@@ -52,16 +52,20 @@ const MyCopyableTextBlock: FC<TMyCopyableTextBlockProps> = ({
                     {label}
                 </label>
                 <div className={classes["get-result-buttons-row"]}>
-                    <MyCooldownButton alignTo="right" CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={RiFileCopy2Fill}
+                    <MyCooldownButton alignTo="left" CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={RiFileCopy2Fill}
                         cooldownText="COPIED" onClick={onCopyButtonClick} isLoading={isLoading}
                     >
                         COPY
                     </MyCooldownButton>
-                    <MyCooldownButton alignTo="right" CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={MdDownload}
-                        cooldownText="SUCCESS" onClick={() => downloadStringAsTxtFile(text, downloadedFileName)}
-                    >
-                        DOWNLOAD
-                    </MyCooldownButton>
+                    {
+                        !isLoading &&
+                        <MyCooldownButton alignTo="right" CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={MdDownload}
+                            cooldownText="SUCCESS" onClick={() => downloadStringAsTxtFile(text, downloadedFileName)}
+                            isLoading={isLoading}
+                        >
+                            DOWNLOAD
+                        </MyCooldownButton>
+                    }
                 </div>
             </figcaption>
             <div className={classes["text-block__divider"]}>
