@@ -4,7 +4,6 @@
     border: var(--border);
     border-radius: var(--radius-m);
     padding: var(--padding-card);
-    --copy-text-animation-duration: 0.22s;
     overflow: hidden;
     position: relative;
 }
@@ -74,4 +73,9 @@
 
 .text-block__divider div {
     border-color: var(--color-font);
+}
+
+.get-result-buttons-row {
+    display: flex;
+    gap: var(--spacing-m);
 }

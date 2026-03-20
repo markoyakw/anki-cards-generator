@@ -2,10 +2,11 @@ import { useEffect, useRef, type FC } from "react"
 import classes from "./MyCopyableTextBlock.module.css"
 import MyDividerLine from "../MyDividerLine/MyDividerLine"
 import MyCooldownButton from "../MyCooldownButton/MyCooldownButton"
-import { FaCopy } from "react-icons/fa"
 import { IoIosCheckmarkCircle } from "react-icons/io"
 import { RiFileCopy2Fill } from "react-icons/ri"
-import { MdDownload, MdFileDownload } from "react-icons/md"
+import { MdDownload } from "react-icons/md"
+import downloadStringAsTxtFile from "../../../utils/downloadStringAsTxtFile"
+import getTimeAndDateString from "../../../utils/getTimeAndDateString"
 
 type TMyTextBlockProps = {
     children: string,
@@ -42,15 +43,26 @@ const MyCopyableTextBlock: FC<TMyCopyableTextBlockProps> = ({
         container.style.setProperty("--line-height", lineHeight)
     }, [])
 
+    const downloadedFileName = "Anki generated deck " + getTimeAndDateString()
+
     return (
         <figure className={containerClassName} ref={containerRef}>
             <figcaption className={classes["text-block__header"]}>
                 <label htmlFor={id}>
                     {label}
                 </label>
-                <MyCooldownButton CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={RiFileCopy2Fill} cooldownText="COPIED" onClick={onCopyButtonClick} isLoading={isLoading}>
-                    COPY
-                </MyCooldownButton>
+                <div className={classes["get-result-buttons-row"]}>
+                    <MyCooldownButton alignTo="right" CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={RiFileCopy2Fill}
+                        cooldownText="COPIED" onClick={onCopyButtonClick} isLoading={isLoading}
+                    >
+                        COPY
+                    </MyCooldownButton>
+                    <MyCooldownButton alignTo="right" CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={MdDownload}
+                        cooldownText="SUCCESS" onClick={() => downloadStringAsTxtFile(text, downloadedFileName)}
+                    >
+                        DOWNLOAD
+                    </MyCooldownButton>
+                </div>
             </figcaption>
             <div className={classes["text-block__divider"]}>
                 <MyDividerLine orientation="horisontal" />

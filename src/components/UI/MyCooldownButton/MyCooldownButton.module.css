@@ -4,6 +4,7 @@
     color: var(--color-font);
     border: none;
     background-color: transparent;
+    --copy-text-animation-duration: 0.22s;
 }
 
 .cd-button:hover {
@@ -12,14 +13,15 @@
 
 .cd-button__states-container {
     position: relative;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
 }
 
-.cd-button__state-spans-container {
+.button-text__container {
+    grid-area: 1 / 1;
     background-color: var(--color-secondary);
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    max-width: fit-content;
 }
 
 .svg-icon {
@@ -27,29 +29,23 @@
     height: 1.3em;
     padding-left: var(--spacing-xs);
     flex-shrink: 0;
-}
-
-/* cooldown state */
-.cd-button__state-spans-container:first-child {
-    position: absolute;
-    top: 0px;
-    right: 0px;
+    display: inline;
 }
 
 /* ready state */
-.cd-button__state-spans-container:last-child {
+.button-text__container--ready {
     clip-path: inset(0 0 0 0);
 }
 
 /* disappearance animation of a front text layer*/
-.cd-button--on-cooldown .cd-button__state-spans-container:last-child {
+.cd-button--on-cooldown .button-text__container--ready {
     transition: clip-path var(--copy-text-animation-duration) linear;
     clip-path: inset(0 0 0 100%);
 }
 
 
 /* appearance animation of a front text layer*/
-.cd-button--ready .cd-button__state-spans-container:last-child {
+.cd-button--ready .button-text__container--ready {
     animation: appearance-animation 0.3s;
 }
 
@@ -65,7 +61,7 @@
 
 /* rectangle that follows the text change animation */
 /* for disappearance*/
-.cd-button__state-spans-container::after {
+.button-text__container::after {
     --rectangle-color: var(--color-secondary);
     content: "";
     width: 10px;
@@ -79,7 +75,7 @@
 }
 
 /* for appearance*/
-.cd-button__state-spans-container::before {
+.button-text__container::before {
     --rectangle-color: var(--color-secondary);
     content: "";
     width: 10px;
@@ -94,14 +90,14 @@
 
 /* animation of the rectangle */
 /* for disappearance*/
-.cd-button--ready .cd-button__state-spans-container::after {
+.cd-button--ready .button-text__container::after {
     opacity: 1;
     left: 100%;
     animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
 }
 
 /* for appearance*/
-.cd-button--on-cooldown .cd-button__state-spans-container::before {
+.cd-button--on-cooldown .button-text__container::before {
     opacity: 1;
     left: 100%;
     animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
@@ -119,15 +115,14 @@
 }
 
 /* letter spans selectors */
-.cd-button--on-cooldown .cd-button__state-spans-container:first-child span,
-.cd-button--ready .cd-button__state-spans-container:nth-child(2) span {
+.cd-button--on-cooldown .button-text__container--on-cooldown>span,
+.cd-button--ready .button-text__container--ready>span {
     animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.3) ease-out;
     animation-delay: calc(var(--copy-text-animation-duration) / var(--string-length) * var(--id));
 }
 
-.cd-button__state-spans-container:first-child span,
-.cd-button__state-spans-container:nth-child(2) span {
-    line-height: 1em;
+.button-text__container>span {
+    display: inline-block;
 }
 
 /* --------------------- */
@@ -146,20 +141,17 @@
     }
 }
 
+
 /* bounce of a "ready" text's svg icon when state is "on-cooldown" */
-.cd-button--on-cooldown .cd-button__states-container .cd-button__state-spans-container:nth-child(1) .svg-icon {
+.cd-button--on-cooldown .svg-icon--on-cooldown {
     animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
     animation-delay: var(--copy-text-animation-duration);
 }
 
 /* bounce of a "on-cooldown" text's svg icon when state is "ready" */
-.cd-button--ready .cd-button__states-container .cd-button__state-spans-container:nth-child(2) .svg-icon {
+.cd-button--ready .svg-icon--ready {
     animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
     animation-delay: var(--copy-text-animation-duration);
-}
-
-.text-block__divider div {
-    border-color: var(--color-font);
 }
 
 @keyframes letter-bounce-loading {
