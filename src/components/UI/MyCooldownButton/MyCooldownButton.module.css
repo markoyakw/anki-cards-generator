@@ -1,4 +1,4 @@
-.cooldown-button {
+.cd-button {
     flex-grow: 0;
     cursor: pointer;
     color: var(--color-font);
@@ -6,42 +6,50 @@
     background-color: transparent;
 }
 
-.cooldown-button:hover {
+.cd-button:hover {
     color: white;
 }
 
-.cooldown-button:hover .svg-icon * {
-    stroke: white;
-}
-
-.cooldown-button__animated-text-container {
+.cd-button__states-container {
     position: relative;
 }
 
-.cooldown-button__animated-text {
+.cd-button__state-spans-container {
     background-color: var(--color-secondary);
     display: flex;
     align-items: center;
     justify-content: flex-end;
+    max-width: fit-content;
 }
 
-.cooldown-button__animated-text:last-child {
-    clip-path: inset(0 0 0 0);
+.svg-icon {
+    width: 1.3em;
+    height: 1.3em;
+    padding-left: var(--spacing-xs);
+    flex-shrink: 0;
+}
+
+/* cooldown state */
+.cd-button__state-spans-container:first-child {
     position: absolute;
     top: 0px;
     right: 0px;
-    width: 100%;
+}
+
+/* ready state */
+.cd-button__state-spans-container:last-child {
+    clip-path: inset(0 0 0 0);
 }
 
 /* disappearance animation of a front text layer*/
-.cooldown-button--on-cooldown .cooldown-button__animated-text:last-child {
+.cd-button--on-cooldown .cd-button__state-spans-container:last-child {
     transition: clip-path var(--copy-text-animation-duration) linear;
     clip-path: inset(0 0 0 100%);
 }
 
 
 /* appearance animation of a front text layer*/
-.cooldown-button--ready .cooldown-button__animated-text:last-child {
+.cd-button--ready .cd-button__state-spans-container:last-child {
     animation: appearance-animation 0.3s;
 }
 
@@ -57,7 +65,7 @@
 
 /* rectangle that follows the text change animation */
 /* for disappearance*/
-.cooldown-button__animated-text::after {
+.cd-button__state-spans-container::after {
     --rectangle-color: var(--color-secondary);
     content: "";
     width: 10px;
@@ -71,7 +79,7 @@
 }
 
 /* for appearance*/
-.cooldown-button__animated-text::before {
+.cd-button__state-spans-container::before {
     --rectangle-color: var(--color-secondary);
     content: "";
     width: 10px;
@@ -86,14 +94,14 @@
 
 /* animation of the rectangle */
 /* for disappearance*/
-.cooldown-button--ready .cooldown-button__animated-text::after {
+.cd-button--ready .cd-button__state-spans-container::after {
     opacity: 1;
     left: 100%;
     animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
 }
 
 /* for appearance*/
-.cooldown-button--on-cooldown .cooldown-button__animated-text::before {
+.cd-button--on-cooldown .cd-button__state-spans-container::before {
     opacity: 1;
     left: 100%;
     animation: rectangle-disappearance 0s linear forwards var(--copy-text-animation-duration);
@@ -111,16 +119,17 @@
 }
 
 /* letter spans selectors */
-.cooldown-button--on-cooldown .cooldown-button__animated-text:first-child span,
-.cooldown-button--ready .cooldown-button__animated-text:nth-child(2) span {
+.cd-button--on-cooldown .cd-button__state-spans-container:first-child span,
+.cd-button--ready .cd-button__state-spans-container:nth-child(2) span {
     animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.3) ease-out;
     animation-delay: calc(var(--copy-text-animation-duration) / var(--string-length) * var(--id));
 }
 
-.cooldown-button__animated-text:first-child span,
-.cooldown-button__animated-text:nth-child(2) span {
+.cd-button__state-spans-container:first-child span,
+.cd-button__state-spans-container:nth-child(2) span {
     line-height: 1em;
 }
+
 /* --------------------- */
 
 @keyframes letter-bounce {
@@ -137,27 +146,16 @@
     }
 }
 
-.svg-icon {
-    width: 1.2em;
-    height: 1.2em;
-    padding-left: var(--spacing-xs);
-}
-
-/* bounce of a "copy" button text's svg icon when state is "copied" */
-.cooldown-button--on-cooldown .cooldown-button__animated-text-container .cooldown-button__animated-text:nth-child(1) .svg-icon {
+/* bounce of a "ready" text's svg icon when state is "on-cooldown" */
+.cd-button--on-cooldown .cd-button__states-container .cd-button__state-spans-container:nth-child(1) .svg-icon {
     animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
     animation-delay: var(--copy-text-animation-duration);
 }
 
-/* bounce of a "copied" button text's svg icon when state is "copy" */
-.cooldown-button--ready .cooldown-button__animated-text-container .cooldown-button__animated-text:nth-child(2) .svg-icon {
+/* bounce of a "on-cooldown" text's svg icon when state is "ready" */
+.cd-button--ready .cd-button__states-container .cd-button__state-spans-container:nth-child(2) .svg-icon {
     animation: letter-bounce calc(var(--copy-text-animation-duration) * 0.7) ease-out;
-    animation-delay: var(--copy-text-animation-durationn);
-}
-
-.svg-icon * {
-    width: 1em;
-    height: 1em;
+    animation-delay: var(--copy-text-animation-duration);
 }
 
 .text-block__divider div {
@@ -182,7 +180,7 @@
     }
 }
 
-.cooldown-button__loading-text span {
+.cd-button__loading-spans-container span {
     display: inline-block;
     animation: letter-bounce-loading 1s ease-out infinite;
     animation-delay: calc(0.1s * var(--id));

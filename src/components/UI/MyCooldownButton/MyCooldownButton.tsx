@@ -50,23 +50,23 @@ const MyCooldownButton: FC<TMyCooldownButton> = ({ isLoading, onClick, children,
         }, COPIED_TEXT_CHANGE_DURATION)
     }
 
-    const copyButtonClassname = `${classes["cooldown-button"]} 
-    ${isCooldownRunning === true && classes["cooldown-button--on-cooldown"]} 
-    ${isCooldownRunning === false && classes["cooldown-button--ready"]}`
+    const copyButtonClassname = `${classes["cd-button"]} 
+    ${isCooldownRunning === true && classes["cd-button--on-cooldown"]} 
+    ${isCooldownRunning === false && classes["cd-button--ready"]}`
 
     return (
         <>{
             isLoading
-                ? <div className={classes["cooldown-button__loading-text"]}>
+                ? <div className={classes["cd-button__loading-spans-container"]}>
                     {getSeparateSymbolsInSpans("LOADING...")}
                 </div>
                 : <button onClick={cooldownButtonClickHandler} className={copyButtonClassname}>
-                    <div className={classes["cooldown-button__animated-text-container"]}>
-                        <div className={classes["cooldown-button__animated-text"]} style={getSymbolsWithStringLengthStyle(cooldownText)}>
+                    <div className={classes["cd-button__states-container"]}>
+                        <div className={classes["cd-button__state-spans-container"]} style={getSymbolsWithStringLengthStyle(cooldownText)}>
                             {getSeparateSymbolsInSpans(cooldownText)}
                             <CooldownIcon className={classes["svg-icon"]} />
                         </div>
-                        <div className={classes["cooldown-button__animated-text"]} style={getSymbolsWithStringLengthStyle(children)}>
+                        <div className={classes["cd-button__state-spans-container"]} style={getSymbolsWithStringLengthStyle(children)}>
                             {getSeparateSymbolsInSpans(children)}
                             <ButtonIcon className={classes["svg-icon"]} />
                         </div>
