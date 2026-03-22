@@ -65,7 +65,7 @@ const MainForm = () => {
                     <LanguageSelects control={control} errors={errors} />
 
                     <MyError>
-                        {errors["prompt-words-to-process"]?.message || errors['language-to-learn-select']?.message ||
+                        {errors["prompt-words-to-process"]?.message || errors['target-language-select']?.message ||
                             errors["level-of-language-select"]?.message || errors["root"]?.message || errors["native-language-select"]?.message}
                     </MyError>
 
@@ -80,12 +80,11 @@ const MainForm = () => {
                             generate
                         </MyButton>
                     </div>
-
                 </div>
             </form >
 
             {deckResult &&
-                <MyCopyableTextBlock label={`${getValues("native-language-select")}-${getValues("language-to-learn-select")}-${getValues("level-of-language-select")}`}
+                <MyCopyableTextBlock label={`${getValues("native-language-select")}-${getValues("target-language-select")}-${getValues("level-of-language-select")}`}
                     isCollapsed={isTextBlockCollapsed} toggleIsTextBlockCollapsed={toggleIsTextBlockCollapsed} isLoading={isStreaming} id='deck-result'
                 >
                     {deckResult}

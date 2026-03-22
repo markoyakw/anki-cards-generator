@@ -1,7 +1,7 @@
 import classes from './MainForm.module.css'
 import { Controller, type Control, type FieldErrors } from 'react-hook-form'
 import PromptValueSelect from './PromptValueSelect/PromptValueSelect'
-import { LANGUAGE_TO_LEARN_OPTIONS, LEVEL_OF_LANGUAGE_OPTIONS, NATIVE_LANGUAGE_OPTIONS, type TFormValues } from '../../constants/mainForm'
+import { TARGET_LANGUAGE_OPTIONS, LEVEL_OF_LANGUAGE_OPTIONS, NATIVE_LANGUAGE_OPTIONS, type TFormValues } from '../../constants/mainForm'
 import type { FC } from 'react'
 
 type TLanguageSelectsProps = {
@@ -24,12 +24,12 @@ const LanguageSelects: FC<TLanguageSelectsProps> = ({ control, errors }) => {
             </div>
 
             <div className={classes["form__select-and-title"]}>
-                <Controller name='language-to-learn-select' control={control}
+                <Controller name='target-language-select' control={control}
                     rules={{ required: "all fields must be filled" }}
                     render={({ field }) => (
                         <PromptValueSelect labelText="Language, that you learn:" useFormControllerField={field}
-                            options={LANGUAGE_TO_LEARN_OPTIONS} id={"language-to-learn-select"}
-                            isError={!!errors["language-to-learn-select"]}
+                            options={TARGET_LANGUAGE_OPTIONS} id={"target-language-select"}
+                            isError={!!errors["target-language-select"]}
                         />)}
                 />
             </div>

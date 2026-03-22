@@ -1,11 +1,6 @@
 import initSqlJs, { type Database } from 'sql.js'
 import JSZip from 'jszip'
-
-interface AnkiField {
-    name: string
-    font?: string
-    size?: number
-}
+import type { TTargetLanguageValue } from '../../constants/mainForm'
 
 interface AnkiTemplate {
     name: string
@@ -13,20 +8,26 @@ interface AnkiTemplate {
     afmt: string
 }
 
-interface AnkiModelConfig {
-    deckName: string
+interface AnkiModelConfig<TFields extends string = string> {
     modelName: string
-    fields: AnkiField[]
+    fields: TFields[]
     templates: AnkiTemplate[]
     css?: string
+    ttsFields?: { name: TFields, lang: TTargetLanguageValue }[]
 }
 
-function getAnkiCardTemplate(config: AnkiModelConfig) {
-    return async function download(cards: string[][]): Promise<void> {
+async function fetchTts(text: string, lang = 'de'): Promise<ArrayBuffer> {
+    const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&lang=${lang}`)
+    const buffer = await response.arrayBuffer()
+    return buffer
+}
+
+function getAnkiCardTemplate<TFields extends string>(config: AnkiModelConfig<TFields>) {
+    return async function download(deckName: string, cards: Record<TFields, string>[]): Promise<void> {
         const SQL = await initSqlJs({ locateFile: () => `/sql-wasm.wasm` })
         const db: Database = new SQL.Database()
         const now = Math.floor(Date.now() / 1000)
-        const deckId = 1
+        const deckId = Date.now()
         const modelId = Date.now()
 
         db.run(`CREATE TABLE col (id INTEGER PRIMARY KEY, crt INTEGER, mod INTEGER, scm INTEGER, ver INTEGER, dty INTEGER, usn INTEGER, ls INTEGER, conf TEXT, models TEXT, decks TEXT, dconf TEXT, tags TEXT)`)
@@ -35,9 +36,44 @@ function getAnkiCardTemplate(config: AnkiModelConfig) {
         db.run(`CREATE TABLE graves (usn INTEGER NOT NULL, oid INTEGER NOT NULL, type INTEGER NOT NULL)`)
         db.run(`CREATE TABLE revlog (id INTEGER PRIMARY KEY, cid INTEGER NOT NULL, usn INTEGER NOT NULL, ease INTEGER NOT NULL, ivl INTEGER NOT NULL, lastIvl INTEGER NOT NULL, factor INTEGER NOT NULL, time INTEGER NOT NULL, type INTEGER NOT NULL)`)
 
+        const mediaMap: Record<string, string> = {}
+        const audioFiles: { name: string, data: ArrayBuffer }[] = []
+
+        const cardsAsArrays: string[][] = cards.map(card =>
+            config.fields.map(fieldName => card[fieldName] ?? '')
+        )
+
+        // generate audio if ttsField is assigned
+        if (config.ttsFields && config.ttsFields.length > 0) {
+            const indexedFields = config.ttsFields.map(field => ({
+                index: config.fields.indexOf(field.name),
+                lang: field.lang
+            }))
+
+            let mediaCounter = 0
+
+            for (let i = 0; i < cardsAsArrays.length; i++) {
+                for (const { index, lang } of indexedFields) {
+                    const text = cardsAsArrays[i][index]
+                    if (!text) continue
+                    const filename = `${mediaCounter}.mp3`
+                    const zipFilename = `${mediaCounter}`
+                    try {
+                        const audio = await fetchTts(text, lang)
+                        audioFiles.push({ name: zipFilename, data: audio })
+                        mediaMap[String(mediaCounter)] = filename
+                        cardsAsArrays[i][index] = `${text} [sound:${filename}]`
+                        mediaCounter++
+                    } catch (e) {
+                        console.warn(`TTS failed for "${text}"`, e)
+                    }
+                }
+            }
+        }
+
         const decks = JSON.stringify({
             [deckId]: {
-                id: deckId, name: config.deckName, conf: 1, desc: '', dyn: 0,
+                id: deckId, name: deckName, conf: 1, desc: '', dyn: 0,
                 collapsed: false, browserCollapsed: false, extendNew: 0, extendRev: 0,
                 newToday: [0, 0], revToday: [0, 0], lrnToday: [0, 0], timeToday: [0, 0],
                 mod: now, usn: -1
@@ -49,8 +85,7 @@ function getAnkiCardTemplate(config: AnkiModelConfig) {
                 id: modelId, name: config.modelName, type: 0, mod: now, usn: -1,
                 sortf: 0, did: deckId,
                 flds: config.fields.map((f, ord) => ({
-                    name: f.name, ord, sticky: false, rtl: false,
-                    font: f.font ?? 'Arial', size: f.size ?? 20
+                    name: f, ord, sticky: false, rtl: false, font: 'Arial', size: 20,
                 })),
                 tmpls: config.templates.map((t, ord) => ({
                     name: t.name, ord, qfmt: t.qfmt, afmt: t.afmt,
@@ -65,8 +100,8 @@ function getAnkiCardTemplate(config: AnkiModelConfig) {
             1, now, now, now, 11, 0, -1, 0, '{}', models, decks, '{}', '{}'
         ])
 
-        cards.forEach((fields, i) => {
-            const flds = fields.map(f => f ?? '').join('\x1f')
+        cardsAsArrays.forEach((fields, i) => {
+            const flds = fields.join('\x1f')
             const guid = Math.random().toString(36).substring(2, 12)
             db.run(`INSERT INTO notes VALUES (?,?,?,?,?,?,?,?,?,?,?)`,
                 [i + 1, guid, modelId, now, -1, '', flds, fields[0] ?? '', 0, 0, ''])
@@ -75,15 +110,17 @@ function getAnkiCardTemplate(config: AnkiModelConfig) {
         })
 
         const dbBytes = db.export()
+
         const zip = new JSZip()
         zip.file('collection.anki2', dbBytes)
-        zip.file('media', '{}')
+        zip.file('media', JSON.stringify(mediaMap))
+        audioFiles.forEach(f => zip.file(f.name, f.data))
 
         const blob = await zip.generateAsync({ type: 'blob' })
         const url = URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.href = url
-        a.download = `${config.deckName}.apkg`
+        a.download = `${deckName}.apkg`
         a.click()
         URL.revokeObjectURL(url)
         db.close()

@@ -1,26 +1,37 @@
 import getAnkiCardTemplate from "./getAnkiCardTemplate"
 import languageCardFrontHTML from "./languageCardFront.html?raw"
 import languageCardBack from "./languageCardBack.html?raw"
+import type { TLanguageCard } from "../../types/languageCard"
 
+const fields: (keyof TLanguageCard)[] = [
+    "wordInNativeLanguage",
+    "wordInTargetLanguage",
+    "clue",
+    "additionalInformation",
+    
+    "useExampleInNativeLanguage1",
+    "useExampleInNativeLanguage2",
+    "useExampleInNativeLanguage3",
+
+    "useExampleInTargetLanguage1",
+    "useExampleInTargetLanguage2",
+    "useExampleInTargetLanguage3",
+]
 
 const generateDownloadLanguageDeck = getAnkiCardTemplate({
-    deckName: 'Deutsch',
-    modelName: 'Deutsch Wörter',
-    fields: [
-        { name: 'Das Wort auf Russisch' },
-        { name: 'Der Hinweis' },
-        { name: 'Das Wort auf Deutsch' },
-        { name: 'die Verwendungsbeispiele auf Russisch' },
-        { name: 'Zusätzliche Information' },
-        { name: 'das Verwendungsbeispiel auf Deutsch 1' },
-        { name: 'das Verwendungsbeispiel auf Deutsch 2' },
-        { name: 'das Verwendungsbeispiel auf Deutsch 3' },
-    ],
+    modelName: 'Language card',
+    fields,
     templates: [{
-        name: 'Card 1',
+        name: 'Native to Target',
         qfmt: languageCardFrontHTML,
         afmt: languageCardBack,
     }],
+    ttsFields: [
+        { name: "wordInTargetLanguage", lang: 'de' },
+        { name: "useExampleInTargetLanguage1", lang: 'de' },
+        { name: "useExampleInTargetLanguage2", lang: 'de' },
+        { name: "useExampleInTargetLanguage3", lang: 'de' }
+    ]
 })
 
 export default generateDownloadLanguageDeck

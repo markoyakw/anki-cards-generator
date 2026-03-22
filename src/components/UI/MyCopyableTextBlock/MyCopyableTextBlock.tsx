@@ -43,7 +43,7 @@ const MyCopyableTextBlock: FC<TMyCopyableTextBlockProps> = ({
         container.style.setProperty("--line-height", lineHeight)
     }, [])
 
-    const downloadedFileName = "Anki generated deck " + getTimeAndDateString()
+    const downloadingFileName = "Anki generated deck " + getTimeAndDateString()
 
     return (
         <figure className={containerClassName} ref={containerRef}>
@@ -60,7 +60,7 @@ const MyCopyableTextBlock: FC<TMyCopyableTextBlockProps> = ({
                     {
                         !isLoading &&
                         <MyCooldownButton alignTo="right" CooldownIcon={IoIosCheckmarkCircle} ButtonIcon={MdDownload}
-                            cooldownText="SUCCESS" onClick={() => downloadStringAsTxtFile(text, downloadedFileName)}
+                            cooldownText="SUCCESS" onClick={() => downloadStringAsTxtFile(text, downloadingFileName)}
                             isLoading={isLoading}
                         >
                             DOWNLOAD

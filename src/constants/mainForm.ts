@@ -6,13 +6,13 @@ export const NATIVE_LANGUAGE_OPTIONS = [
 export type TNativeLanguageOption = typeof NATIVE_LANGUAGE_OPTIONS[number]
 export type TNativeLanguageValue = typeof NATIVE_LANGUAGE_OPTIONS[number]['value']
 
-export const LANGUAGE_TO_LEARN_OPTIONS = [
+export const TARGET_LANGUAGE_OPTIONS = [
     { value: "", text: "" },
-    { value: "en", text: "english" },
-    { value: "ge", text: "german" }
+    { value: "en-US", text: "english" },
+    { value: "de", text: "german" }
 ] as const
-export type TLanguageToLearnOption = typeof LANGUAGE_TO_LEARN_OPTIONS[number]
-export type TLanguageToLearnValue = typeof LANGUAGE_TO_LEARN_OPTIONS[number]['value']
+export type TTargetLanguageOption = typeof TARGET_LANGUAGE_OPTIONS[number]
+export type TTargetLanguageValue = typeof TARGET_LANGUAGE_OPTIONS[number]['value']
 
 export const LEVEL_OF_LANGUAGE_OPTIONS = [
     { value: "", text: "" },
@@ -31,7 +31,7 @@ export type TLevelOfLanguageValue = typeof LEVEL_OF_LANGUAGE_OPTIONS[number]["va
 
 export type TFormValues = {
     "native-language-select": TNativeLanguageValue
-    "language-to-learn-select": TLanguageToLearnValue
+    "target-language-select": TTargetLanguageValue
     "level-of-language-select": TLevelOfLanguageValue
     "prompt-words-to-process": string
     "new-api-key": string

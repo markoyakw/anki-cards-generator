@@ -1,4 +1,4 @@
-import { LEVEL_OF_LANGUAGE_OPTIONS, NATIVE_LANGUAGE_OPTIONS, type TFormValues, type TLanguageToLearnValue, type TNativeLanguageOption } from "../constants/mainForm"
+import { LEVEL_OF_LANGUAGE_OPTIONS, NATIVE_LANGUAGE_OPTIONS, type TFormValues, type TTargetLanguageValue, type TNativeLanguageOption } from "../constants/mainForm"
 
 const getNextLanguageLevel = (currentLevel: string): string | null => {
     const currentLevelId = LEVEL_OF_LANGUAGE_OPTIONS.findIndex(lvlElement => lvlElement.value === currentLevel)
@@ -10,11 +10,11 @@ const getNextLanguageLevel = (currentLevel: string): string | null => {
 
 const getPromptWithoutWordsToProcess = (
     nativeLanguageText: TNativeLanguageOption["text"],
-    languageToLearnValue: TLanguageToLearnValue,
+    targetLanguageValue: TTargetLanguageValue,
     languageLevelsForExampleSentences: string
 ) => {
 
-    if (languageToLearnValue === "en") return `
+    if (targetLanguageValue === "en-US") return `
     You are a world-class Anki flashcard creator that helps students create 
     flashcards that help them remember new words and phrases that sound naturally, 
     like from a native speaker. You will be given a list of English words and 
@@ -70,7 +70,7 @@ const getPromptWithoutWordsToProcess = (
     be in <li></li> tag.
     WORDS TO PROCESS:`
 
-    if (languageToLearnValue === "ge") return `
+    if (targetLanguageValue === "de") return `
     You are a world-class Anki flashcard creator that helps students create 
     flashcards that help them remember new words and phrases that sound naturally, 
     like from a native speaker. You will be given a list of german words and phrases, 
@@ -162,7 +162,7 @@ const buildPrompt = (
     data: TFormValues
 ) => {
     const nativeLanguageValue = data["native-language-select"]
-    const languageToLearnValue = data["language-to-learn-select"]
+    const targetLanguageValue = data["target-language-select"]
     const levelOfLanguageValue = data["level-of-language-select"]
     const promptWordsToProcess = data["prompt-words-to-process"]
 
@@ -173,7 +173,7 @@ const buildPrompt = (
 
     const nextLanguageLevel = getNextLanguageLevel(levelOfLanguage)
     const languageLevelsForExampleSentences = `${levelOfLanguage}${nextLanguageLevel ? " to " + nextLanguageLevel : ""}`
-    const promptWithoutWordsToProcess = getPromptWithoutWordsToProcess(nativeLanguage, languageToLearnValue, languageLevelsForExampleSentences)
+    const promptWithoutWordsToProcess = getPromptWithoutWordsToProcess(nativeLanguage, targetLanguageValue, languageLevelsForExampleSentences)
     const prompt = promptWithoutWordsToProcess + "\n" + promptWordsToProcess
     return prompt
 }
