@@ -3,7 +3,7 @@ import useSendAiRequest from "../../../hooks/useSendAiRequest"
 
 const useApiKeyManager = () => {
 
-    const KEY_VALIDATION_CHECK_FREQUENCY = 1000 * 60 * 5
+    const KEY_VALIDATION_CHECK_FREQUENCY = 1000 * 60 * 30
 
     const [validLocalKey, setValidLocalKey] = useState<null | string>(null)
     const { sendAiRequest } = useSendAiRequest()

@@ -3,7 +3,7 @@ import MyButton from '../UI/MyButton/MyButton'
 import MyDividerLine from '../UI/MyDividerLine/MyDividerLine'
 import MyTextarea from '../UI/MyTextarea/MyTextarea'
 import classes from "./MainForm.module.css"
-import MyCopyableTextBlock from '../UI/MyCopyableTextBlock/MyCopyableTextBlock'
+import GeneratedDeckTextBlock from './GeneratedDeckTextBlock/GeneratedDeckTextBlock'
 import { type TFormValues } from '../../constants/mainForm'
 import { Controller, useForm, type SubmitHandler } from 'react-hook-form'
 import MyError from '../UI/MyError/MyError'
@@ -84,11 +84,11 @@ const MainForm = () => {
             </form >
 
             {deckResult &&
-                <MyCopyableTextBlock label={`${getValues("native-language-select")}-${getValues("target-language-select")}-${getValues("level-of-language-select")}`}
+                <GeneratedDeckTextBlock label={`${getValues("native-language-select")}-${getValues("target-language-select")}-${getValues("level-of-language-select")}`}
                     isCollapsed={isTextBlockCollapsed} toggleIsTextBlockCollapsed={toggleIsTextBlockCollapsed} isLoading={isStreaming} id='deck-result'
                 >
                     {deckResult}
-                </MyCopyableTextBlock>
+                </GeneratedDeckTextBlock>
             }
         </div >
     )

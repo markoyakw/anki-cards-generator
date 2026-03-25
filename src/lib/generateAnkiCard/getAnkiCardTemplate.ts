@@ -1,6 +1,7 @@
 import initSqlJs, { type Database } from 'sql.js'
 import JSZip from 'jszip'
 import type { TTargetLanguageValue } from '../../constants/mainForm'
+import stripHtml from '../../utils/stripHtml'
 
 interface AnkiTemplate {
     name: string
@@ -16,6 +17,10 @@ interface AnkiModelConfig<TFields extends string = string> {
     ttsFields?: { name: TFields, lang: TTargetLanguageValue }[]
 }
 
+type TDownloadOptions = {
+    onProgress?: (current: number, total: number) => void
+}
+
 async function fetchTts(text: string, lang = 'de'): Promise<ArrayBuffer> {
     const response = await fetch(`/api/tts?text=${encodeURIComponent(text)}&lang=${lang}`)
     const buffer = await response.arrayBuffer()
@@ -23,7 +28,11 @@ async function fetchTts(text: string, lang = 'de'): Promise<ArrayBuffer> {
 }
 
 function getAnkiCardTemplate<TFields extends string>(config: AnkiModelConfig<TFields>) {
-    return async function download(deckName: string, cards: Record<TFields, string>[]): Promise<void> {
+    return async function download(
+        deckName: string,
+        cards: Record<TFields, string>[],
+        options?: TDownloadOptions
+    ): Promise<void> {
         const SQL = await initSqlJs({ locateFile: () => `/sql-wasm.wasm` })
         const db: Database = new SQL.Database()
         const now = Math.floor(Date.now() / 1000)
@@ -50,6 +59,7 @@ function getAnkiCardTemplate<TFields extends string>(config: AnkiModelConfig<TFi
                 lang: field.lang
             }))
 
+            const total = cards.length * indexedFields.length
             let mediaCounter = 0
 
             for (let i = 0; i < cardsAsArrays.length; i++) {
@@ -59,11 +69,12 @@ function getAnkiCardTemplate<TFields extends string>(config: AnkiModelConfig<TFi
                     const filename = `${mediaCounter}.mp3`
                     const zipFilename = `${mediaCounter}`
                     try {
-                        const audio = await fetchTts(text, lang)
+                        const audio = await fetchTts(stripHtml(text), lang)
                         audioFiles.push({ name: zipFilename, data: audio })
                         mediaMap[String(mediaCounter)] = filename
                         cardsAsArrays[i][index] = `${text} [sound:${filename}]`
                         mediaCounter++
+                        options?.onProgress?.(mediaCounter, total) //progress
                     } catch (e) {
                         console.warn(`TTS failed for "${text}"`, e)
                     }
