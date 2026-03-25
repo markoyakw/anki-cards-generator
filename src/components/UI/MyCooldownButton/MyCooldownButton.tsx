@@ -1,10 +1,11 @@
-import { useMemo, useRef, useState, type CSSProperties, type FC, type MouseEventHandler } from 'react'
+import { useEffect, useMemo, useRef, useState, type CSSProperties, type FC, type MouseEventHandler } from 'react'
 import classes from "./MyCooldownButton.module.css"
 import type { IconType } from 'react-icons'
 import { flushSync } from 'react-dom'
 
+export type TCooldownButtonState = 'null' | 'loading' | 'ready' | 'onCD' | 'error'
+
 type TMyCooldownButton = {
-    isLoading?: boolean
     onClick: MouseEventHandler<HTMLButtonElement>
     alignTo: "left" | "right"
     loadingText?: string
@@ -12,9 +13,9 @@ type TMyCooldownButton = {
     ButtonIcon: IconType
     cooldownText: string
     CooldownIcon: IconType
+    isLoading?: boolean
+    error?: string | null
 }
-
-type TButtonState = 'null' | 'loading' | 'ready' | 'onCD' | 'error'
 
 const getSymbolsWithStringLengthStyle = (string: string) => {
     return { "--string-length": string.length } as CSSProperties
@@ -32,45 +33,46 @@ const getSeparateSymbolsInSpans = (string: string) => {
 }
 
 const MyCooldownButton: FC<TMyCooldownButton> = ({
-    isLoading,
     onClick,
     children,
     ButtonIcon,
     cooldownText,
     CooldownIcon,
     alignTo,
-    loadingText = "LOADING..."
+    loadingText = "LOADING...",
+    isLoading,
+    error
 }) => {
-    const [state, setState] = useState<TButtonState>('null')
+
     const COOLDOWN_DURATION = 3000
+    const [state, setState] = useState<TCooldownButtonState>('null')
     const timerRef = useRef<null | NodeJS.Timeout>(null)
+    const prevIsLoadingRef = useRef(false)
 
-    // sync with isLoading prop
-    const resolvedState: TButtonState = isLoading ? 'loading' : state
-
-    const buttonClassname = `${classes["cd-button"]} ${
-        resolvedState === 'onCD' ? classes["cd-button--on-cooldown"] : ''
-    } ${
-        resolvedState === 'ready' ? classes["cd-button--ready"] : ''
-    } ${
-        resolvedState === 'error' ? classes["cd-button--error"] : ''
-    }`
-
-    const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
-        if (timerRef.current) {
-            clearTimeout(timerRef.current)
-            flushSync(() => setState('ready'))
-        }
-
-        try {
-            onClick(e)
+    useEffect(() => {
+        if (prevIsLoadingRef.current === true && !isLoading && !error) {
+            if (timerRef.current) clearTimeout(timerRef.current)
             setState('onCD')
             timerRef.current = setTimeout(() => {
                 setState('ready')
             }, COOLDOWN_DURATION)
-        } catch {
-            setState('error')
         }
+        prevIsLoadingRef.current = isLoading || false
+    }, [isLoading, error])
+
+    const resolvedState: TCooldownButtonState = isLoading ? 'loading' : error ? 'error' : state
+
+    const buttonClassname = `${classes["cd-button"]} ${resolvedState === 'onCD' ? classes["cd-button--on-cooldown"] : ''
+        } ${resolvedState === 'ready' ? classes["cd-button--ready"] : ''
+        } ${resolvedState === 'error' ? classes["cd-button--error"] : ''
+        }`
+
+    const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
+        if (timerRef.current) {
+            clearTimeout(timerRef.current)
+            flushSync(() => setState('null'))
+        }
+        onClick(e)
     }
 
     const buttonTextContainerStyles = useMemo((): CSSProperties => ({
