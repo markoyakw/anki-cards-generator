@@ -73,6 +73,13 @@ const MyCooldownButton: FC<TMyCooldownButton> = ({
             flushSync(() => setState('null'))
         }
         onClick(e)
+
+        if (!isLoading) {
+            setState('onCD')
+            timerRef.current = setTimeout(() => {
+                setState('ready')
+            }, COOLDOWN_DURATION)
+        }
     }
 
     const buttonTextContainerStyles = useMemo((): CSSProperties => ({
