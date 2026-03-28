@@ -4,7 +4,7 @@ export const NATIVE_LANGUAGE_OPTIONS = [
     { value: "ru", text: "russian" }
 ] as const
 export type TNativeLanguageOption = typeof NATIVE_LANGUAGE_OPTIONS[number]
-export type TNativeLanguageValue = typeof NATIVE_LANGUAGE_OPTIONS[number]['value']
+export type TNativeLanguageValue = Exclude<TNativeLanguageOption['value'], "">
 
 export const TARGET_LANGUAGE_OPTIONS = [
     { value: "", text: "" },
@@ -12,7 +12,7 @@ export const TARGET_LANGUAGE_OPTIONS = [
     { value: "de", text: "german" }
 ] as const
 export type TTargetLanguageOption = typeof TARGET_LANGUAGE_OPTIONS[number]
-export type TTargetLanguageValue = typeof TARGET_LANGUAGE_OPTIONS[number]['value']
+export type TTargetLanguageValue = Exclude<TTargetLanguageOption['value'], "">
 
 export const LEVEL_OF_LANGUAGE_OPTIONS = [
     { value: "", text: "" },
@@ -27,7 +27,7 @@ export const LEVEL_OF_LANGUAGE_OPTIONS = [
 ] as const
 
 export type TLevelOfLanguageOption = typeof LEVEL_OF_LANGUAGE_OPTIONS[number]
-export type TLevelOfLanguageValue = typeof LEVEL_OF_LANGUAGE_OPTIONS[number]["value"]
+export type TLevelOfLanguageValue = Exclude<TLevelOfLanguageOption["value"], "">
 
 export type TFormValues = {
     "native-language-select": TNativeLanguageValue

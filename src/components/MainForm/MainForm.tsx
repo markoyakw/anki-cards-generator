@@ -86,6 +86,7 @@ const MainForm = () => {
             {deckResult &&
                 <GeneratedDeckTextBlock label={`${getValues("native-language-select")}-${getValues("target-language-select")}-${getValues("level-of-language-select")}`}
                     isCollapsed={isTextBlockCollapsed} toggleIsTextBlockCollapsed={toggleIsTextBlockCollapsed} isLoading={isStreaming} id='deck-result'
+                    targetLanguage={getValues("target-language-select")}
                 >
                     {deckResult}
                 </GeneratedDeckTextBlock>

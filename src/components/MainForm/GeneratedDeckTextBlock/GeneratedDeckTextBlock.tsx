@@ -9,14 +9,16 @@ import downloadStringAsTxtFile from "../../../utils/downloadStringAsTxtFile"
 import getTimeAndDateString from "../../../utils/getTimeAndDateString"
 import GenerateApkgWithVoiceButton from "./GenerateApkgWithVoiceButton"
 import { convertAiResponseToCardArray, convertDeckToAnkiPipeDividedTxt } from "../../../lib/convertDeck"
+import type { TTargetLanguageValue } from "../../../constants/mainForm"
 
 type TMyTextBlockProps = {
     children: string,
     id: string,
     label: string,
     isLoading?: boolean,
-    isCollapsed: boolean
-    toggleIsTextBlockCollapsed: () => void
+    isCollapsed: boolean,
+    toggleIsTextBlockCollapsed: () => void,
+    targetLanguage: TTargetLanguageValue
 }
 
 type TGeneratedDeckTextBlockProps = TMyTextBlockProps
@@ -27,7 +29,8 @@ const GeneratedDeckTextBlock: FC<TGeneratedDeckTextBlockProps> = ({
     label,
     isLoading,
     isCollapsed,
-    toggleIsTextBlockCollapsed
+    toggleIsTextBlockCollapsed,
+    targetLanguage
 }) => {
 
     const containerClassName = `${classes["text-block__container"]} ${isCollapsed ? classes["text-block__container--collapsed"] : classes["text-block__container--expanded"]}`
@@ -81,7 +84,7 @@ const GeneratedDeckTextBlock: FC<TGeneratedDeckTextBlockProps> = ({
                             >
                                 .TXT FILE
                             </MyCooldownButton>
-                            <GenerateApkgWithVoiceButton cardArray={cardArray} downloadingFileName={downloadingFileName} isLoading={isLoading} />
+                            <GenerateApkgWithVoiceButton language={targetLanguage} cardArray={cardArray} downloadingFileName={downloadingFileName} isLoading={isLoading} />
                         </>
                     }
                 </div>
