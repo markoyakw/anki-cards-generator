@@ -54,6 +54,8 @@ function getAnkiCardTemplate<TFields extends string>(config: AnkiModelConfig<TFi
 
         // generate audio if ttsField is assigned
         if (config.ttsFields && config.ttsFields.length > 0) {
+            const RETRY_COUNT = 5
+
             const indexedFields = config.ttsFields.map(field => ({
                 index: config.fields.indexOf(field.name),
                 lang: field.lang
@@ -62,22 +64,33 @@ function getAnkiCardTemplate<TFields extends string>(config: AnkiModelConfig<TFi
             const total = cards.length * indexedFields.length
             let mediaCounter = 0
 
+            const fetchTtsWithRetry = async (text: string, lang: string): Promise<ArrayBuffer> => {
+                let lastError: unknown
+                for (let attempt = 0; attempt < RETRY_COUNT; attempt++) {
+                    try {
+                        return await fetchTts(text, lang)
+                    } catch (e) {
+                        lastError = e
+                        console.warn(`TTS attempt ${attempt + 1}/${RETRY_COUNT} failed for "${text}"`, e)
+                    }
+                }
+                throw lastError
+            }
+
             for (let i = 0; i < cardsAsArrays.length; i++) {
                 for (const { index, lang } of indexedFields) {
                     const text = cardsAsArrays[i][index]
                     if (!text) continue
                     const filename = `${mediaCounter}.mp3`
                     const zipFilename = `${mediaCounter}`
-                    try {
-                        const audio = await fetchTts(stripHtml(text), lang)
-                        audioFiles.push({ name: zipFilename, data: audio })
-                        mediaMap[String(mediaCounter)] = filename
-                        cardsAsArrays[i][index] = `${text} [sound:${filename}]`
-                        mediaCounter++
-                        options?.onProgress?.(mediaCounter, total) //progress
-                    } catch (e) {
-                        console.warn(`TTS failed for "${text}"`, e)
-                    }
+
+                    // if all retries faild - the error is thrown and the loop stops
+                    const audio = await fetchTtsWithRetry(stripHtml(text), lang)
+                    audioFiles.push({ name: zipFilename, data: audio })
+                    mediaMap[String(mediaCounter)] = filename
+                    cardsAsArrays[i][index] = `${text} [sound:${filename}]`
+                    mediaCounter++
+                    options?.onProgress?.(mediaCounter, total)
                 }
             }
         }
